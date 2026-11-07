@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nitin Palleti — Senior Software Engineer · Applied AI</title>
+  <meta name="description" content="Nitin Palleti — senior Java engineer (8+ years, banking and payments) building evidence-grounded, evaluated AI systems." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161513'/><text x='16' y='22' font-family='monospace' font-size='15' text-anchor='middle' fill='%2357c785'>np</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top"><span class="dot"></span>nitin.palleti</a>
+    <nav class="nav">
+      <a href="#brief">Brief</a>
+      <a href="#work">Work</a>
+      <a href="#approach">Approach</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme" id="themeBtn" aria-label="Toggle colour theme">◐</button>
+  </header>
+
+  <main id="top">
+    <!-- ───────── HERO ───────── -->
+    <section class="hero">
+      <p class="eyebrow mono"><span class="pulse"></span> Open to Software Engineering &amp; Applied AI roles</p>
+      <h1>Nitin Palleti</h1>
+      <p class="lede">
+        Senior Java engineer with 8+ years on banking, payments and commerce platforms —
+        now building <em>AI systems you can audit</em>: facts first, model second,
+        and an evaluation gate before anything ships.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="https://www.linkedin.com/in/nitinpalleti/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="btn" href="https://github.com/nitinpalleti-swe" target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="btn" href="resume.pdf" target="_blank" rel="noopener">Résumé ↓</a>
+        <a class="btn" href="#contact">Get in touch</a>
+      </div>
+
+      <div class="claims-note mono">
+        <span class="cite-demo">[1]</span> Claims on this page cite their evidence. Hover or tap the brackets.
+      </div>
+    </section>
+
+    <!-- ───────── RECRUITER BRIEF ───────── -->
+    <section id="brief" class="block">
+      <div class="block-head">
+        <span class="num mono">01</span>
+        <h2>The 30-second brief</h2>
+      </div>
+      <div class="brief">
+        <dl>
+          <div><dt>Now</dt><dd>Java Software Engineer at <strong>JPMorganChase</strong>, Offers team</dd></div>
+          <div><dt>Experience</dt><dd>8+ years across banking, payments, telecom and digital commerce</dd></div>
+          <div><dt>Looking for</dt><dd>Senior Software Engineer, Applied AI Engineer, or AI Platform roles</dd></div>
+          <div><dt>Strengths</dt><dd>Cloud-native microservices, event-driven systems, production ownership, LLM boundaries &amp; evaluation</dd></div>
+          <div><dt>Stack</dt><dd>Java · Spring Boot · AWS (ECS, S3, EMR) · Kafka · Python · FastAPI · React · PostgreSQL / pgvector · Docker</dd></div>
+          <div><dt>Location</dt><dd>Dallas–Fort Worth, TX · Hybrid or remote</dd></div>
+        </dl>
+        <div class="brief-side">
+          <p class="mono small muted">What I bring to an applied AI team</p>
+          <ul class="checks">
+            <li>8+ years shipping and operating production services in regulated finance <a class="cite" data-cite="6">[6]</a></li>
+            <li>AI-assisted engineering in daily use: MCP tools, internal AI skills, automated UAT data workflows <a class="cite" data-cite="6">[6]</a></li>
+            <li>Evals designed before features ship <a class="cite" data-cite="3">[3]</a></li>
+            <li>Typed contracts and fail-closed boundaries <a class="cite" data-cite="2">[2]</a></li>
+            <li>Honest documentation of what is and isn't verified <a class="cite" data-cite="5">[5]</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── FEATURED WORK ───────── -->
+    <section id="work" class="block">
+      <div class="block-head">
+        <span class="num mono">02</span>
+        <h2>Featured work</h2>
+      </div>
+
+      <article class="project">
+        <div class="project-top">
+          <div>
+            <p class="mono small muted">Python · Java · TypeScript — 2026</p>
+            <h3>PaymentOps Workbench</h3>
+            <p class="project-sub">
+              A synthetic payment-investigation workbench where every AI suggestion is grounded
+              in cited evidence and gated by a reusable evaluation harness.
+              <a class="cite" data-cite="1">[1]</a>
+            </p>
+          </div>
+          <a class="btn" href="https://github.com/nitinpalleti-swe/paymentops-workbench" target="_blank" rel="noopener">View source ↗</a>
+        </div>
+
+        <blockquote class="pull">
+          “Payment investigation is an evidence problem, not a text-generation problem.”
+        </blockquote>
+
+        <!-- Interactive architecture -->
+        <div class="arch">
+          <div class="arch-diagram" role="tablist" aria-label="Architecture components">
+            <p class="mono small muted arch-label">Architecture — click a component</p>
+            <button class="node active" data-node="ui" role="tab"><span class="mono k">web</span>React operator UI</button>
+            <span class="wire" aria-hidden="true">↓</span>
+            <button class="node" data-node="api" role="tab"><span class="mono k">api</span>Spring Boot business API</button>
+            <span class="wire" aria-hidden="true">↓ re-reads evidence server-side</span>
+            <div class="pair">
+              <button class="node" data-node="db" role="tab"><span class="mono k">data</span>PostgreSQL + pgvector</button>
+              <button class="node" data-node="ai" role="tab"><span class="mono k">ai</span>FastAPI AI boundary</button>
+            </div>
+            <span class="wire" aria-hidden="true">↓ every release candidate</span>
+            <button class="node gate" data-node="eval" role="tab"><span class="mono k">gate</span>Eval Gate</button>
+          </div>
+          <div class="arch-detail" id="archDetail" aria-live="polite"></div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics">
+          <div class="metric"><span class="big">10</span><span class="mono small">synthetic cases with ordered timelines</span></div>
+          <div class="metric"><span class="big">17</span><span class="mono small">service tests passing (10 Spring · 7 FastAPI)</span></div>
+          <div class="metric"><span class="big">30/20/10</span><span class="mono small">dev / held-out / adversarial eval split</span></div>
+          <div class="metric"><span class="big">0</span><span class="mono small">browser-supplied evidence reaching the model</span></div>
+        </div>
+
+        <div class="two-col">
+          <div>
+            <h4>Decisions I'd defend in an interview</h4>
+            <ol class="decisions">
+              <li><strong>Facts before AI.</strong> Timelines, flags, policy eligibility and citations are deterministic and visible without a model.</li>
+              <li><strong>Fail closed.</strong> Unknown source IDs, malformed output, deadlines and rate limits become explicit <span class="mono">review-required</span> states — never fake success. <a class="cite" data-cite="2">[2]</a></li>
+              <li><strong>Hold out the holdout.</strong> The held-out set is fingerprinted, not consumed, until an independent adapter is ready. <a class="cite" data-cite="3">[3]</a></li>
+            </ol>
+          </div>
+          <div>
+            <h4>Known limitations <span class="tag">by design</span></h4>
+            <ul class="limits">
+              <li>Synthetic data only — no payment rails, no money movement.</li>
+              <li>Tenant selection is caller-controlled; it is not auth.</li>
+              <li>Vector retrieval uses an offline fixture, not an embedding-quality claim.</li>
+              <li>Bedrock adapter and public demo are gated on access and review. <a class="cite" data-cite="5">[5]</a></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ───────── APPROACH ───────── -->
+    <section id="approach" class="block">
+      <div class="block-head">
+        <span class="num mono">03</span>
+        <h2>How I approach applied AI</h2>
+      </div>
+      <div class="principles">
+        <div class="principle">
+          <span class="mono step">deterministic → </span>
+          <h4>Make the facts boring</h4>
+          <p>Retrieve, order and validate the evidence in plain code first. The model should summarise facts, not invent them.</p>
+        </div>
+        <div class="principle">
+          <span class="mono step">contract → </span>
+          <h4>Typed boundaries around the model</h4>
+          <p>Schema-validated requests and responses, source-ID checks, timeouts and budgets. A model is a dependency that can fail like any other. <a class="cite" data-cite="2">[2]</a></p>
+        </div>
+        <div class="principle">
+          <span class="mono step">eval → </span>
+          <h4>Measure before you promote</h4>
+          <p>Versioned dev, held-out and adversarial sets with a gate that blocks release when the evidence isn't there. <a class="cite" data-cite="3">[3]</a></p>
+        </div>
+        <div class="principle">
+          <span class="mono step">human → </span>
+          <h4>Keep a human in the loop</h4>
+          <p>Drafts are versioned, approvals use optimistic concurrency and leave one durable audit event. <a class="cite" data-cite="4">[4]</a></p>
+        </div>
+      </div>
+
+      <div class="gate-demo">
+        <div class="gate-head">
+          <p class="mono small">Try it: a tiny eval gate</p>
+          <p class="small muted">Illustrative example — click a model response to see whether it would pass.</p>
+        </div>
+        <div class="gate-cases" id="gateCases"></div>
+        <div class="gate-result mono" id="gateResult">Select a response ↑</div>
+      </div>
+    </section>
+
+    <!-- ───────── EXPERIENCE ───────── -->
+    <section id="experience" class="block">
+      <div class="block-head">
+        <span class="num mono">04</span>
+        <h2>Experience</h2>
+      </div>
+      <ol class="timeline">
+        <li>
+          <span class="when mono">Oct 2024 — Present<br><span class="muted">Plano, TX · Hybrid</span></span>
+          <div>
+            <h4>Java Software Engineer · JPMorganChase <span class="role-tag">Offers</span></h4>
+            <ul class="bullets">
+              <li>Design and evolve Spring Boot microservices and REST APIs for personalised offer decisioning across transactional, merchant and behavioural data.</li>
+              <li>Run containerised services on AWS ECS with S3, EMR and IAM; own production deployments for application and infrastructure changes, including a migration from Terraform to EAC.</li>
+              <li>Built offer experimentation on Split feature flags — phased rollouts, controlled exposure and rollback.</li>
+              <li>Use and extend internal AI skills, MCP tools and Copilot for code analysis, documentation and unit-test modernisation; built AI-assisted workflows that make UAT data preparation repeatable.</li>
+              <li>BlazeMeter performance testing for release readiness; Datadog APM monitors and alerts, plus Splunk and Dynatrace for production triage.</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <span class="when mono">2026<br><span class="muted">Independent</span></span>
+          <div>
+            <h4>PaymentOps Workbench · Personal project</h4>
+            <p>Designed and built a three-service system (React, Spring Boot, FastAPI) with evidence retrieval, an approval workflow and a reusable AI Eval Gate.</p>
+          </div>
+        </li>
+        <li>
+          <span class="when mono">Aug 2024 — Sep 2024<br><span class="muted">Frisco, TX · Remote</span></span>
+          <div>
+            <h4>Java Software Engineer · BNY</h4>
+            <p>Enhanced Spring Boot services for data ingestion, validation and processing on the Bridgewater platform; built REST integrations and Spring Data / JDBC access layers and optimised queries.</p>
+          </div>
+        </li>
+        <li>
+          <span class="when mono">Feb 2024 — Jul 2024<br><span class="muted">Plano, TX · Hybrid</span></span>
+          <div>
+            <h4>Java Software Engineer · JPMorgan Chase &amp; Co.</h4>
+            <p>Built Spring Boot microservices for real-time payment workflows with Hibernate/JPA and Spring Security; JMS messaging to the orchestration engine; Dockerised deployments on AWS.</p>
+          </div>
+        </li>
+        <li>
+          <span class="when mono">May 2022 — Jan 2024<br><span class="muted">Dallas, TX · Hybrid</span></span>
+          <div>
+            <h4>Java Full Stack Engineer · Copart</h4>
+            <p>Microservices and REST APIs for auction, inventory and partner-integration platforms; event-driven messaging with Kafka and ActiveMQ; reusable React components; Oracle and Cassandra on AWS.</p>
+          </div>
+        </li>
+        <li>
+          <span class="when mono">Aug 2017 — Mar 2021<br><span class="muted">Bengaluru, India</span></span>
+          <div>
+            <h4>Java/J2EE Developer · Sunrise (Switzerland)</h4>
+            <p>Enterprise applications for telecom provisioning and service activation using Spring, Hibernate, REST, JMS and Kafka; production support across the SDLC.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="toolbox edu">
+        <h4>Education</h4>
+        <ol class="timeline">
+          <li>
+            <span class="when mono">Aug 2021 — May 2023</span>
+            <div>
+              <h4>M.S. Computer Science · The University of Texas at Arlington</h4>
+            </div>
+          </li>
+          <li>
+            <span class="when mono">Aug 2013 — May 2017</span>
+            <div>
+              <h4>Bachelor of Engineering · Amrita Vishwa Vidyapeetham</h4>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="toolbox">
+        <h4>Toolbox</h4>
+        <dl>
+          <div><dt>Backend</dt><dd>Java, Spring Boot, Spring MVC, Spring Data JPA, Hibernate, Spring Security, REST, microservices</dd></div>
+          <div><dt>AI / LLM</dt><dd>FastAPI AI boundaries, evaluation harnesses, retrieval with pgvector, MCP tools, Copilot</dd></div>
+          <div><dt>Cloud &amp; DevOps</dt><dd>AWS (ECS, S3, EMR, IAM, EC2, RDS), Docker, Terraform, EAC, Jenkins, CI/CD</dd></div>
+          <div><dt>Messaging &amp; data</dt><dd>Kafka, ActiveMQ, JMS, PostgreSQL, Oracle, Cassandra, Snowflake</dd></div>
+          <div><dt>Quality &amp; ops</dt><dd>JUnit, BlazeMeter, Split feature flags, Datadog APM, Splunk, Dynatrace</dd></div>
+          <div><dt>Frontend</dt><dd>React, JavaScript, HTML5, CSS3</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ───────── CONTACT ───────── -->
+    <section id="contact" class="block contact">
+      <div class="block-head">
+        <span class="num mono">05</span>
+        <h2>Let's talk</h2>
+      </div>
+      <p class="lede small-lede">Hiring for software engineering or applied AI? I'd like to hear about it.</p>
+      <div class="contact-grid">
+        <a class="contact-card" href="https://www.linkedin.com/in/nitinpalleti/" target="_blank" rel="noopener">
+          <span class="mono small muted">LinkedIn</span><span>in/nitinpalleti ↗</span>
+        </a>
+        <a class="contact-card" href="https://github.com/nitinpalleti-swe" target="_blank" rel="noopener">
+          <span class="mono small muted">GitHub</span><span>nitinpalleti-swe ↗</span>
+        </a>
+        <a class="contact-card" href="mailto:npalleti96@gmail.com">
+          <span class="mono small muted">Email</span><span>npalleti96@gmail.com</span>
+        </a>
+        <a class="contact-card" href="resume.pdf" target="_blank" rel="noopener">
+          <span class="mono small muted">Résumé</span><span>Download PDF ↓</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot mono small">
+    <span>© 2026 Nitin Palleti</span>
+    <span class="muted">Built by hand · no tracking</span>
+  </footer>
+
+  <!-- citation popover -->
+  <div class="pop" id="pop" role="tooltip" hidden></div>
+
+  <script src="main.js"></script>
+</body>
+</html>

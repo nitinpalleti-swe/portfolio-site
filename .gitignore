@@ -1,0 +1,21 @@
+# secrets
+.env
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# runtime
+logs/
+
+# private notes
+PROMPTS-ask-nitin.md
+
+# os
+.DS_Store
+
+# local tooling / reports
+.claude/settings.local.json
+.idea/
+WORKER-REPORT.md
