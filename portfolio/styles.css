@@ -234,3 +234,4 @@ main { max-width: 1040px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 48px); }
 @media (max-width: 640px) { .toolbox dl { grid-template-columns: 1fr; } }
 .edu .timeline > li { padding: 1rem 0; }
 .edu .timeline h4 { margin: 0; }
+@media (max-width: 380px) { .metrics, .contact-grid { grid-template-columns: 1fr; } }
