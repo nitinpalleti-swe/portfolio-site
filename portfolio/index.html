@@ -82,6 +82,42 @@
         <h2>Featured work</h2>
       </div>
 
+      <!-- Ask Nitin: numbers from the eval run and request log of 2026-11-08 (see README → Evals) -->
+      <article class="project ask-card">
+        <div class="project-top">
+          <div>
+            <p class="mono small muted">Python · FastAPI · Claude — 2026</p>
+            <h3>Ask Nitin</h3>
+            <p class="project-sub">
+              The assistant in the corner of this page. Ask about my experience and every answer shows
+              where it came from, or paste a job description to see how I match it, requirement by
+              requirement. It answers only from my résumé and project notes, and says so when something
+              isn't covered.
+            </p>
+          </div>
+          <button class="btn primary" type="button" data-open-chat>Try it</button>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span class="big">30/33</span><span class="mono small">test cases passed (91%), checked by rules and an AI judge · Nov 8, 2026</span></div>
+          <div class="metric"><span class="big">1.6 s</span><span class="mono small">average time to a full chat answer</span></div>
+          <div class="metric"><span class="big">5.1 s</span><span class="mono small">average time for a job-fit report</span></div>
+          <div class="metric"><span class="big">$0.0003</span><span class="mono small">average model cost per question</span></div>
+        </div>
+
+        <h4>How it's built</h4>
+        <ol class="decisions">
+          <li><strong>Find the facts first.</strong> A keyword search (BM25) picks the relevant sections of my résumé and project notes; the model answers only from those and cites each one.</li>
+          <li><strong>Check the model's work.</strong> Claude Haiku answers questions; Claude Sonnet writes fit reports, and plain code re-checks every row before you see it.</li>
+          <li><strong>Safe to leave public.</strong> Off-topic requests and prompt injection are refused, with per-visitor rate limits and a daily spending cap.</li>
+          <li><strong>Measured, not assumed.</strong> A test suite with an AI judge and a held-out set it was never tuned on has to pass before deploying.</li>
+        </ol>
+        <p class="mono small muted ask-note">
+          Pass rate and times: evaluation run of 33 cases on Nov 8, 2026. Cost: measured on test traffic before
+          launch, the average over 261 questions in the request log where a model was actually called (median $0.00018).
+        </p>
+      </article>
+
       <article class="project">
         <div class="project-top">
           <div>

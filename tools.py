@@ -6,6 +6,7 @@ so tool output follows the same grounding rules as retrieved sources.
 
 import asyncio
 import json
+import os
 import time
 import urllib.request
 from dataclasses import dataclass, field
@@ -79,7 +80,10 @@ class ToolOutput:
 
 def _fetch_github_repos() -> list[dict]:
     url = f"https://api.github.com/users/{GITHUB_USER}/repos?type=owner&sort=updated&per_page=30"
-    req = urllib.request.Request(url, headers={"Accept": "application/vnd.github+json", "User-Agent": "ask-nitin-portfolio"})
+    headers = {"Accept": "application/vnd.github+json", "User-Agent": "ask-nitin-portfolio"}
+    if token := os.getenv("GITHUB_TOKEN"):  # optional, zero-permission token: only raises the rate limit
+        headers["Authorization"] = f"Bearer {token}"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=5) as resp:  # no token: only public data is reachable
         data = json.load(resp)
     # Allowlist: only these public metadata fields ever leave this function (the API returns ~80).

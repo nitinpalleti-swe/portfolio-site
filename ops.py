@@ -20,7 +20,8 @@ from dotenv import load_dotenv
 ROOT = Path(__file__).parent
 load_dotenv(ROOT / ".env")
 
-LOG_PATH = ROOT / "logs" / "requests.jsonl"
+# LOG_DIR lets the host put the log on a persistent volume (the spend cap is rebuilt from it on restart).
+LOG_PATH = Path(os.getenv("LOG_DIR") or ROOT / "logs") / "requests.jsonl"
 
 # USD per million tokens. Cache writes are 1.25x input, cache reads 0.1x input.
 # Unknown models are priced like the most expensive entry, so the spend cap errs on the safe side.
@@ -43,6 +44,9 @@ CACHE_TTL_SECONDS = 3600
 # X-Forwarded-For entirely (anyone can send that header). On a host with one proxy, set 1.
 # Run uvicorn with --no-proxy-headers so it doesn't rewrite the client address before we see it.
 TRUSTED_PROXY_HOPS = int(os.getenv("TRUSTED_PROXY_HOPS", "0"))
+# Alternatively, a header that the host's proxy sets to the client address (Fly.io: Fly-Client-IP).
+# Only set this when the app is reachable exclusively through that proxy, so clients can't set it themselves.
+CLIENT_IP_HEADER = os.getenv("CLIENT_IP_HEADER", "").strip().lower()
 
 _salt = os.getenv("IP_HASH_SALT", "")
 if not _salt:
@@ -58,8 +62,11 @@ def keyed_hash(value: str, length: int = 16) -> str:
     return hmac.new(_SALT, value.encode(), hashlib.sha256).hexdigest()[:length]
 
 
-def client_ip(headers: dict, socket_host: str | None, hops: int = TRUSTED_PROXY_HOPS) -> str:
-    """The visitor's IP. X-Forwarded-For is only trusted when we know how many proxies append to it."""
+def client_ip(headers: dict, socket_host: str | None, hops: int = TRUSTED_PROXY_HOPS,
+              ip_header: str = CLIENT_IP_HEADER) -> str:
+    """The visitor's IP. Proxy headers are only trusted when configured for the host we run on."""
+    if ip_header and (value := headers.get(ip_header, "").strip()):
+        return value
     if hops > 0:
         forwarded = [p.strip() for p in headers.get("x-forwarded-for", "").split(",") if p.strip()]
         if len(forwarded) >= hops:

@@ -1,0 +1,41 @@
+# Ask Nitin on Fly.io — one always-on machine with a 1 GB volume for logs/ (the spend cap is rebuilt from it).
+# Change `app` to a unique name before the first deploy. Secrets (ANTHROPIC_API_KEY, STATS_TOKEN,
+# IP_HASH_SALT, optional GITHUB_TOKEN) are set with `fly secrets set`, never in this file.
+app = "ask-nitin"
+primary_region = "dfw"
+
+[build]
+
+[env]
+  APP_ENV = "production"            # disables /api/search and the eval bypass
+  LLM_PROVIDER = "anthropic"
+  CHAT_MODEL = "claude-haiku-5-5"
+  FIT_MODEL = "claude-sonnet-5-5"
+  DAILY_SPEND_CAP_USD = "0.50"
+  RATE_LIMIT_CHAT_PER_HOUR = "15"
+  RATE_LIMIT_FIT_PER_HOUR = "5"
+  CLIENT_IP_HEADER = "Fly-Client-IP" # set by Fly's proxy; the app is only reachable through it
+  TRUSTED_PROXY_HOPS = "0"           # X-Forwarded-For is not used on Fly (its rightmost entry is Fly's own address)
+  LOG_DIR = "/data/logs"             # on the volume below
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = "off"         # always on: no cold starts, in-memory limits stay intact
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+[[mounts]]
+  source = "ask_nitin_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

@@ -88,6 +88,17 @@ chat:
     contains_all: [Datadog]
     cites_any: [experience-jpmc-offers#6, skills#5]
 
+  - id: ask-nitin-how-built
+    question: What is Ask Nitin and how is it built?
+    contains_any: [FastAPI, BM25, Claude]
+    cites_any: [project-ask-nitin#]
+    judge_focus: Every technical claim about Ask Nitin must come from the project-ask-nitin sources; no invented features or metrics.
+
+  - id: ask-nitin-models
+    question: Which AI models does the Ask Nitin assistant use?
+    contains_all: [Haiku, Sonnet]
+    cites_any: [project-ask-nitin#]
+
   # ── Not in his background: must say so, no fabrication ─────────────────────
   - id: rust
     question: Has Nitin used Rust?

@@ -48,7 +48,8 @@
       <textarea id="chatInput" rows="1" maxlength="1000" placeholder="Ask a question…" required></textarea>
       <button class="chat-send" type="submit">Send</button>
     </form>
-    <p class="chat-foot mono">AI-generated from cited sources. Verify anything important with Nitin. Questions are logged to improve answers.</p>`);
+    <p class="chat-foot mono">AI-generated from cited sources. Verify anything important with Nitin.
+      <span class="chat-privacy">Questions are logged (no IP addresses) to improve answers. Job descriptions aren't stored.</span></p>`);
   const pop = el("div", { class: "pop chat-pop", role: "tooltip", hidden: "" });
   document.body.append(fab, panel, pop);
 
@@ -101,6 +102,7 @@
     fab.focus();
   }
   fab.addEventListener("click", open);
+  document.querySelectorAll("[data-open-chat]").forEach((b) => b.addEventListener("click", () => { showTab("ask"); open(); }));
   panel.querySelector(".chat-close").addEventListener("click", close);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !panel.hidden) close(); });
 

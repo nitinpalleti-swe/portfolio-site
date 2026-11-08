@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.pyc
+logs/
+evals/
+tests/
+.git/
+.claude/
+.idea/
+WORKER-REPORT.md
+PROMPTS-ask-nitin.md
+run_evals.py
+evals.yaml
+evals-holdout.yaml

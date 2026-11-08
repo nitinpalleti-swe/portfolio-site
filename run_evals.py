@@ -195,6 +195,7 @@ A claim is SUPPORTED only if a source states it (paraphrase is fine). Count as a
 - a citation id that doesn't support the sentence it is attached to
 - breaking the case-specific requirement, if one is given
 Not claims: saying something isn't covered by the sources, polite refusals, suggestions to contact Nitin, and the citation markers themselves.
+A source's title is part of that source: it states the employer, client, role and dates of the section (e.g. "Experience — MAS Global Consulting (client: JPMorganChase, Offers team), Java Software Engineer, Oct 2024 – Present — …"). A sentence naming that role, employer or period is supported by any section with that title.
 
 Knowledge base (ground truth):
 {format_sources(CHUNKS)}
@@ -202,21 +203,35 @@ Knowledge base (ground truth):
 """
 
 
+def cited_block(source_id: str, sources: dict) -> str:
+    """A cited section with its title and text (titles carry the employer/role/dates)."""
+    s = sources.get(source_id) or next(({"id": c.id, "title": c.title, "text": c.text} for c in CHUNKS if c.id == source_id), None)
+    if not s:
+        return f'<source id="{source_id}">(not found)</source>'
+    return f'<source id="{source_id}" title="{s.get("title", "")}">\n{s["text"]}\n</source>'
+
+
 async def judge(kind: str, case: dict, r: dict) -> tuple[Verdict | None, float, str | None]:
     if kind == "chat":
         shown = "\n\n".join(f'<source id="{s["id"]}" title="{s.get("title", "")}">\n{s["text"]}\n</source>'
                               for s in r["sources"].values())
+        cited = "\n\n".join(cited_block(i, r["sources"]) for i in r["cited"])
         user = (f"<question>\n{case['question']}\n</question>\n\n<sources_shown_to_assistant>\n{shown or '(none)'}\n"
-                f"</sources_shown_to_assistant>\n\n<answer>\n{r['answer']}\n</answer>")
+                f"</sources_shown_to_assistant>\n\n<cited_sources>\n{cited or '(none)'}\n</cited_sources>\n\n"
+                f"<answer>\n{r['answer']}\n</answer>")
     else:
         rep = r["report"]
         rows = "\n".join(f"- [{x['status']}] {x['requirement']} — {x['evidence']} [{x['source_id'] or 'no source'}]"
                          for x in rep["requirements"])
+        cited = "\n\n".join(cited_block(i, rep.get("sources", {}))
+                             for i in dict.fromkeys(x["source_id"] for x in rep["requirements"] if x["source_id"]))
         user = (f"This is a job-fit report about Nitin for the job description below. Check every claim about Nitin in "
                 f"the summary and evidence lines against the knowledge base, and each row's evidence against its own cited "
-                f"source. Statements about the job itself (what it requires, offers or where it is) may come from the job "
-                f"description, and the summary may summarise the report's own row statuses (e.g. 'most core requirements are "
-                f"gaps'); neither is a problem.\n\n<job_description>\n{case['jd']}\n</job_description>\n\n"
+                f"source (title and text, below). Statements about the job itself (what it requires, offers or where it is) "
+                f"may come from the job description. The summary may describe how many requirements matched ('most', "
+                f"'nearly every', 'all', 'most core requirements are gaps') when the row statuses support it; flag such "
+                f"wording only if the rows contradict it.\n\n<job_description>\n{case['jd']}\n</job_description>\n\n"
+                f"<cited_sources>\n{cited or '(none)'}\n</cited_sources>\n\n"
                 f"<summary>\n{rep['summary']}\n</summary>\n\n<requirement_rows>\n{rows}\n</requirement_rows>")
     if focus := case.get("judge_focus"):
         user += f"\n\n<case_requirement>\n{focus}\n</case_requirement>"

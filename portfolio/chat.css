@@ -123,3 +123,10 @@
 .fit-checks ul { margin: .4rem 0 0; padding-left: 1.1rem; }
 .chat-fit .chat-foot { padding: 0; background: none; }
 @media (max-width: 640px) { .chat-panel.wide { width: 100vw; height: 100dvh; } }
+
+/* "Ask Nitin" card in Featured work (uses the site's .project/.metrics styles) */
+.ask-card { margin-bottom: 1.5rem; }
+.ask-card button.btn { font: inherit; font-weight: 500; font-size: .92rem; cursor: pointer; }
+.ask-card h4 { margin-top: .25rem; }
+.ask-card .ask-note { margin: 1.25rem 0 0; line-height: 1.5; }
+.chat-privacy { display: block; margin-top: .2rem; opacity: .85; }

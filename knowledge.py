@@ -46,13 +46,14 @@ def load_chunks(folder: Path = KNOWLEDGE_DIR) -> list[Chunk]:
 # words (IDF), with diminishing returns for repeats and a penalty for long chunks.
 
 # Words that carry no meaning for search. "nitin"/"palleti" are here because every
-# chunk is about him; "used"/"work" because nearly every question contains them.
+# chunk is about him; "used"/"work"/"job" because nearly every question contains them
+# ("job" also matched the Ask Nitin project's "job-fit" sections and crowded out his roles).
 STOP_WORDS = set(
     "a an the and or of to in on for with at by from as is are was were be been "
     "has have had do does did what which who whom how when where why can could would "
     "should will about his he him her she they them their it its this that these those "
     "any me my i you your tell much many there used use using work worked working "
-    "nitin palleti".split()
+    "nitin palleti job jobs".split()
 )
 
 

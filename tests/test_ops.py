@@ -117,3 +117,10 @@ def test_eval_spend_has_its_own_budget(tmp_path, monkeypatch):
         ops.log_request({"endpoint": "eval", "status": "ok", "ip": "local", "latency_ms": 1},
                         [{"model": "claude-sonnet-5-5", "input": 100_000, "output": 0, "cache_write": 0, "cache_read": 0}])
     assert ops.over_eval_cap() and not ops.over_daily_cap()
+
+
+def test_client_ip_header_mode_for_fly():
+    headers = {"fly-client-ip": "198.51.100.9", "x-forwarded-for": "6.6.6.6, 198.51.100.9, 66.241.124.1"}
+    assert ops.client_ip(headers, "172.16.0.2", hops=0, ip_header="fly-client-ip") == "198.51.100.9"
+    assert ops.client_ip({}, "172.16.0.2", hops=0, ip_header="fly-client-ip") == "172.16.0.2"  # header missing
+    assert ops.client_ip(headers, "172.16.0.2", hops=0, ip_header="") == "172.16.0.2"          # not configured: ignored
