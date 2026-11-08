@@ -13,7 +13,8 @@
     "Tell me about PaymentOps Workbench.",
   ];
   const HISTORY_LIMIT = 12; // 6 user/assistant exchanges
-  const CITE_RE = /\[([a-z0-9-]+#\d+)\]/g;
+  const CITE_RE = /\[([a-z0-9-]+(?:#\d+)?)\]/g; // [experience-copart#2], [github], [contact]
+  const TOOL_LABELS = { get_github_repos: "GitHub (live)", get_resume_section: "Résumé section", contact_nitin: "Contact info" };
 
   const history = [];
   let busy = false;
@@ -92,7 +93,9 @@
     const bubble = addMsg("bot");
     bubble.innerHTML = `<span class="chat-typing" aria-label="Thinking"><span></span><span></span><span></span></span>`;
 
-    let sources = {};
+    const sources = {};
+    const tools = [];
+    let contact = null;
     let reply = "";
     try {
       const res = await fetch("/api/chat", {
@@ -106,7 +109,14 @@
       }
       await readEvents(res, (ev) => {
         if (ev.type === "sources") {
-          sources = Object.fromEntries(ev.sources.map((s) => [s.id, s]));
+          ev.sources.forEach((s) => (sources[s.id] = s)); // retrieval first, then tool results
+        } else if (ev.type === "tool") {
+          if (!tools.includes(ev.name)) tools.push(ev.name);
+        } else if (ev.type === "contact") {
+          contact = ev.contact;
+        } else if (ev.type === "reset") {
+          reply = ev.text; // server dropped a pre-tool-call preamble
+          renderAnswer(bubble, reply, sources);
         } else if (ev.type === "delta") {
           reply += ev.text;
           renderAnswer(bubble, reply, sources);
@@ -117,6 +127,7 @@
       });
       if (!reply.trim()) throw new Error("No answer came back. Please try again.");
       renderAnswer(bubble, reply, sources, true);
+      renderExtras(bubble, tools, contact);
       history.push({ role: "user", content: question }, { role: "assistant", content: reply });
     } catch (err) {
       bubble.className = "chat-msg error";
@@ -159,6 +170,31 @@
     });
     bubble.innerHTML = html.replace(/ +([.,;:])/g, "$1").replace(/\n/g, "<br>");
     bubble.querySelectorAll(".chat-cite").forEach((b) => bindCite(b, sources[b.dataset.src]));
+  }
+
+  // Under the answer: contact buttons (plain links — nothing is sent) and a subtle "used" line.
+  function renderExtras(bubble, tools, contact) {
+    if (contact) {
+      const row = el("div", { class: "chat-contact" });
+      const links = [
+        ["Email", `mailto:${contact.email}`, false],
+        ["LinkedIn ↗", contact.linkedin, true],
+        ["GitHub ↗", contact.github, true],
+        ["Résumé ↓", contact.resume, true],
+      ];
+      links.forEach(([label, href, newTab]) => {
+        if (!/^(https:\/\/|mailto:|\/)/.test(href)) return; // only safe link schemes
+        const a = el("a", { class: "btn", href, ...(newTab ? { target: "_blank", rel: "noopener" } : {}) });
+        a.textContent = label;
+        row.append(a);
+      });
+      bubble.append(row);
+    }
+    if (tools.length) {
+      const line = el("p", { class: "chat-tools mono" });
+      line.textContent = `Used: ${tools.map((t) => TOOL_LABELS[t] || t).join(" · ")}`;
+      bubble.after(line);
+    }
   }
 
   function bindCite(btn, src) {
