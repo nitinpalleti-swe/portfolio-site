@@ -1,5 +1,5 @@
 # Project — Ask Nitin (the AI assistant on this portfolio site, 2026)
-Sources: the Ask Nitin code and README in this site's repository (app.py, knowledge.py, llm.py, tools.py, ops.py, run_evals.py), 2026-11-08.
+Sources: the Ask Nitin code and README in this site's repository (app.py, knowledge.py, llm.py, tools.py, ops.py, run_evals.py), 2026-11-08; how it was built confirmed by Nitin, 2026-11-08.
 
 ## Overview
 Ask Nitin is the AI assistant on Nitin's portfolio website, a personal project from 2026. Recruiters can ask questions about his experience and get short answers with citations to his résumé, portfolio and project materials, or paste a job description and get a fit report that checks each requirement against those sources.
@@ -24,3 +24,9 @@ Off-topic requests get a fixed polite refusal, and prompt-injection attempts are
 
 ## Evaluation
 An evaluation suite runs factual, negative, off-topic, prompt-injection and job-fit cases against the app. Answers are checked with simple rules plus an LLM judge (Claude Sonnet 5.5) that asks whether every claim is supported by the cited source, and a headless browser test checks that the widget sends a typed question. The suite fails below a 90% pass rate so it can gate deploys, and a separate holdout set that was never used for tuning guards against overfitting.
+
+## The portfolio site
+This portfolio website is also a personal project from 2026: a static site (HTML, CSS and plain JavaScript, with no build step) that presents his experience and featured work, with citation markers that show the evidence behind claims. It is served by the same FastAPI app as Ask Nitin, at the same URL.
+
+## How it was built
+Nitin built the portfolio site and Ask Nitin with AI coding agents (Claude Code) in a leader/worker setup. He wrote the step-by-step specifications and ground rules; one agent implemented each step, a second agent independently tested and reviewed it, and Nitin approved every commit. An evaluation suite gated changes, and the reviews caught real issues before they shipped, for example a rate-limit bypass through a spoofed X-Forwarded-For header and a broken Enter-to-send in the chat box. The code was written by the AI agents under his direction and review, not typed entirely by hand.

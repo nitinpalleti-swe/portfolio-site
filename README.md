@@ -7,9 +7,9 @@ My portfolio site plus **Ask Nitin**, an AI assistant that lets recruiters
 
 Every answer is grounded in the markdown files in `knowledge/`. If something isn't there, the assistant says so.
 
-**Latest eval:** 30/33 graded cases passed (91%, gate 90%) on 2026-11-08; average chat answer 1.6 s, average fit report
-5.1 s (`evals/results-2026-11-08.json`). Holdout: 6/6 on 2026-11-08. Average model cost per question on pre-launch test
-traffic: $0.0003 (median $0.00018, 261 questions with a model call in `logs/requests.jsonl`).
+**Latest eval:** 35/37 graded cases passed (95%, gate 90%) on 2026-11-08; average chat answer 1.8 s, average fit report
+5.0 s (`evals/results-2026-11-08.json`). Holdout: 6/6 on 2026-11-08. Average model cost per question on pre-launch test
+traffic: $0.0003 (median $0.00020, 354 questions with a model call in `logs/requests.jsonl`).
 
 ## Architecture
 
@@ -49,7 +49,7 @@ Tests: `.venv/bin/pip install -r requirements-dev.txt && .venv/bin/python -m pyt
 
 ## Evals
 
-`evals.yaml` (27 chat + 5 fit cases) is checked by `run_evals.py` with rules plus an LLM judge (Claude Sonnet 5.5:
+`evals.yaml` (31 chat + 5 fit cases) is checked by `run_evals.py` with rules plus an LLM judge (Claude Sonnet 5.5:
 "is every claim supported by the cited source?") and a headless-Chrome check that typing + Enter sends a message.
 
 ```bash

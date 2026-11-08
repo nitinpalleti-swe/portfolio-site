@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nitin Palleti — Senior Software Engineer · Applied AI</title>
-  <meta name="description" content="Nitin Palleti — senior Java engineer (8+ years, banking and payments) building evidence-grounded, evaluated AI systems." />
+  <meta name="description" content="Nitin Palleti — senior software engineer (8+ years, banking and payments) building evidence-grounded, evaluated AI systems." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -15,13 +15,14 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#top"><span class="dot"></span>nitin.palleti</a>
-    <nav class="nav">
+    <nav class="nav" id="siteNav" aria-label="Sections">
       <a href="#brief">Brief</a>
       <a href="#work">Work</a>
       <a href="#approach">Approach</a>
       <a href="#experience">Experience</a>
       <a href="#contact">Contact</a>
     </nav>
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Open menu"><span aria-hidden="true">☰</span></button>
     <button class="theme" id="themeBtn" aria-label="Toggle colour theme">◐</button>
   </header>
 
@@ -31,7 +32,7 @@
       <p class="eyebrow mono"><span class="pulse"></span> Open to Software Engineering &amp; Applied AI roles</p>
       <h1>Nitin Palleti</h1>
       <p class="lede">
-        Senior Java engineer with 8+ years on banking, payments and commerce platforms —
+        Senior software engineer with 8+ years on banking, payments and commerce platforms —
         now building <em>AI systems you can audit</em>: facts first, model second,
         and an evaluation gate before anything ships.
       </p>
@@ -99,9 +100,9 @@
         </div>
 
         <div class="metrics">
-          <div class="metric"><span class="big">30/33</span><span class="mono small">test cases passed (91%), checked by rules and an AI judge · Nov 8, 2026</span></div>
-          <div class="metric"><span class="big">1.6 s</span><span class="mono small">average time to a full chat answer</span></div>
-          <div class="metric"><span class="big">5.1 s</span><span class="mono small">average time for a job-fit report</span></div>
+          <div class="metric"><span class="big">35/37</span><span class="mono small">test cases passed, checked by rules and an AI judge · Nov 8, 2026</span></div>
+          <div class="metric"><span class="big">1.8 s</span><span class="mono small">average time to a full chat answer</span></div>
+          <div class="metric"><span class="big">5.0 s</span><span class="mono small">average time for a job-fit report</span></div>
           <div class="metric"><span class="big">$0.0003</span><span class="mono small">average model cost per question</span></div>
         </div>
 
@@ -113,8 +114,8 @@
           <li><strong>Measured, not assumed.</strong> A test suite with an AI judge and a held-out set it was never tuned on has to pass before deploying.</li>
         </ol>
         <p class="mono small muted ask-note">
-          Pass rate and times: evaluation run of 33 cases on Nov 8, 2026. Cost: measured on test traffic before
-          launch, the average over 261 questions in the request log where a model was actually called (median $0.00018).
+          Pass rate and times: evaluation run of 37 cases on Nov 8, 2026. Cost: measured on test traffic before
+          launch, the average over 354 questions in the request log where a model was actually called (median $0.00020).
         </p>
       </article>
 

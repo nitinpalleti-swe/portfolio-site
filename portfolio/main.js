@@ -113,3 +113,20 @@ const revealIO = new IntersectionObserver((entries) => {
   entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); revealIO.unobserve(e.target); } });
 }, { threshold: 0.08 });
 document.querySelectorAll(".block").forEach((s) => { s.classList.add("reveal"); revealIO.observe(s); });
+
+/* ── Mobile section menu ─────────────────────── */
+const navToggle = document.getElementById("navToggle");
+const siteNav = document.getElementById("siteNav");
+function setNav(open) {
+  siteNav.classList.toggle("open", open);
+  navToggle.setAttribute("aria-expanded", String(open));
+  navToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+}
+navToggle.addEventListener("click", () => setNav(!siteNav.classList.contains("open")));
+siteNav.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setNav(false)));
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && siteNav.classList.contains("open")) { setNav(false); navToggle.focus(); }
+});
+document.addEventListener("click", (e) => {
+  if (siteNav.classList.contains("open") && !e.target.closest("#siteNav, #navToggle")) setNav(false);
+});

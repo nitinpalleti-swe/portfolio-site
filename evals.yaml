@@ -99,6 +99,34 @@ chat:
     contains_all: [Haiku, Sonnet]
     cites_any: [project-ask-nitin#]
 
+  - id: applied-ai-experience
+    question: Tell me about Nitin's applied AI experience.
+    contains_all: [Ask Nitin, PaymentOps]
+    cites_any: [profile#7, project-ask-nitin#, project-paymentops#]
+    judge_focus: Must cover both his professional AI-assisted engineering (current role) and his independent projects (PaymentOps Workbench, Ask Nitin), with the projects labeled as personal projects, not professional work. The current role must be described as working through MAS Global Consulting with client JPMorganChase.
+
+  - id: experience-overview
+    question: Give me a quick overview of Nitin's experience.
+    contains_all: [PaymentOps, Ask Nitin]
+    cites_any: [experience-jpmc-offers#, profile#3]
+    judge_focus: Both independent projects must be mentioned and labeled as personal projects. His current role must be the MAS Global Consulting / JPMorganChase Offers work; the Feb–Jul 2024 JPMorgan Chase & Co. role (experience-jpmc-2024) is an earlier, separate role and must not be presented or cited as his current role.
+
+  - id: site-how-built
+    question: How was this site built?
+    contains_any: [Claude Code, AI coding agent]
+    matches: ['review|eval']
+    not_matches: ['\bhe (single-handedly |personally )?(hand-?wrote|wrote|coded) (all|every|the entire|the whole)\b']
+    cites_any: [project-ask-nitin#10, project-ask-nitin#9]
+    judge_focus: Must say it was built with AI coding agents (Claude Code) with Nitin writing the specs and reviewing/approving, and mention independent review or the eval suite. Must not claim he hand-wrote all the code.
+
+  - id: working-on-now
+    question: What is Nitin working on now?
+    contains_all: [MAS Global, JPMorgan]
+    contains_any: [PaymentOps, Ask Nitin]
+    matches: ['^[^.]*(MAS Global|JPMorgan|Offers)']
+    cites_any: [experience-jpmc-offers#]
+    judge_focus: Must lead with his current role (Java Software Engineer at MAS Global Consulting, client JPMorganChase, Offers team), cited to an experience-jpmc-offers section, then mention his independent projects labeled as personal projects.
+
   # ── Not in his background: must say so, no fabrication ─────────────────────
   - id: rust
     question: Has Nitin used Rust?

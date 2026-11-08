@@ -35,6 +35,18 @@ CHAT_MODEL = os.getenv("CHAT_MODEL", "claude-haiku-5-5")
 app = FastAPI(title="Ask Nitin", docs_url=None, redoc_url=None, openapi_url=None)
 
 
+NO_CACHE_TYPES = ("text/html", "text/css", "javascript")
+
+
+@app.middleware("http")
+async def revalidate_site_files(request, call_next):
+    """HTML/CSS/JS: browsers must revalidate (cheap 304 via ETag), so a deploy is never hidden by a stale cache."""
+    response = await call_next(request)
+    if any(t in response.headers.get("content-type", "") for t in NO_CACHE_TYPES):
+        response.headers["Cache-Control"] = "no-cache"
+    return response
+
+
 # ── Chat ──────────────────────────────────────────────────────────────────────
 
 CHAT_SYSTEM_PROMPT = """You are "Nitin's assistant", a chat assistant on the portfolio website of Nitin Palleti, a software engineer. Recruiters and hiring managers use you to learn about his experience, skills, projects, education and the roles he is looking for.
@@ -50,7 +62,9 @@ Grounding (most important):
 - After each sentence that states a fact, cite its source id in square brackets, e.g. "He built event-driven services with Apache Kafka at Copart [experience-copart#2]." Use only ids that appear in the current <sources> block or in this turn's tool results, copied exactly. Cite several ids if needed: [skills#3] [experience-copart#2].
 - If neither the sources nor a tool can answer the question, say so plainly, for example: "That isn't covered in Nitin's background materials." Do not speculate about whether he might know it. Then suggest contacting Nitin directly through the Contact section of this page. If the sources partly answer it, give the part they support and say what is not covered.
 - Distinguish professional experience from personal projects and coursework exactly as the sources do.
-- Employment: describe his current role as working through MAS Global Consulting with JPMorganChase as the client (Offers team); don't comment on direct employment either way.
+- Employment: describe his current role as working through MAS Global Consulting with JPMorganChase as the client (Offers team); don't comment on direct employment either way. When you describe his current role, cite an experience-jpmc-offers section, never experience-jpmc-2024 (an earlier, separate role).
+- For "now", "current" or "currently" questions (e.g. "What is Nitin working on now?"), lead with his current role (MAS Global Consulting, client JPMorganChase, Offers team) citing an experience-jpmc-offers section, then mention his independent projects.
+- For overview, background, applied-AI / AI-experience or projects questions, cover both his professional AI work (open that part with "In his current role, he …"; never write "his AI work is in…" or "comes from…" framing) and his independent projects, PaymentOps Workbench and Ask Nitin, clearly labeled as personal projects.
 - Never state counts or totals ("both roles", "three roles", "all his jobs", "N years of X") unless a source states that number. This includes counting items you list yourself: just name the specific roles or projects.
 - Don't add qualifiers the sources don't state: no "only", "all", "every", "just", "never", "limited to", "most recent", "main" or "latest". Say what the sources show, e.g. "his public GitHub repository is X", not "his most recent repository is X".
 - Never give out a phone number. For contact details, use only what the sources or the contact tool state.
@@ -74,6 +88,18 @@ CITE_RE = re.compile(r"\[([a-z0-9-]+(?:#\d+)?)\]")  # [experience-copart#2], [gi
 # added to the sources and the widget shows the buttons, whether or not the model calls the tool.
 CONTACT_INTENT = re.compile(r"\b(contact|reach|e-?mail|hire|hiring|get in touch|linkedin|r[eé]sum[eé]s?|cv)\b", re.IGNORECASE)
 REFUSAL_SENTENCE = "I can only help with questions about Nitin's background, skills and fit for roles."
+# Deterministic extra sources: overview / AI / projects questions always see his independent projects, and
+# questions about this site always see how it was built, so those answers don't depend on keyword luck.
+PROJECTS_INTENT = re.compile(r"\b(overview|summar\w*|background|applied ai|ai|artificial intelligence|machine learning|ml|llms?|"
+                             r"gen ?ai|projects?|portfolio|what has he built|tell me about (nitin|him))\b", re.IGNORECASE)
+CURRENT_INTENT = re.compile(r"\b(now|current|currently|these days|at the moment|present|presently|today)\b", re.IGNORECASE)
+SITE_INTENT = re.compile(r"\b(this (site|website|page|portfolio)|portfolio (site|website)|ask nitin|how (was|is) (it|this|the site) built|"
+                         r"built (this|the) (site|website|portfolio))\b", re.IGNORECASE)
+PROJECTS_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("profile#") and c.title.endswith("— Independent projects")]
+SITE_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("project-ask-nitin#")
+                  and c.title.split(" — ")[-1] in ("The portfolio site", "How it was built")]
+CURRENT_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("experience-jpmc-offers#")][:2] + PROJECTS_CHUNK_IDS
+assert PROJECTS_CHUNK_IDS and len(SITE_CHUNK_IDS) == 2, "knowledge sections for projects/site are missing"
 REQUEST_DEADLINE_SECONDS = 20
 STATS_TOKEN = os.getenv("STATS_TOKEN", "")
 EVAL_TOKEN = os.getenv("EVAL_TOKEN", "")
@@ -171,6 +197,10 @@ async def chat(req: ChatRequest, request: Request):
     if not tokenize(query):
         query += " " + next((t.content for t in reversed(history) if t.role == "user"), "")
     chunks = [c for c, _ in retrieve(query, k=6)]
+    extra = (CURRENT_CHUNK_IDS if CURRENT_INTENT.search(req.message) else []) + \
+            (PROJECTS_CHUNK_IDS if PROJECTS_INTENT.search(req.message) else []) + \
+            (SITE_CHUNK_IDS if SITE_INTENT.search(req.message) else [])
+    chunks += [CHUNKS_BY_ID[i] for i in extra if i not in {c.id for c in chunks}]
     allowed_ids = {c.id for c in chunks}
     sources = [{"id": c.id, "title": c.title, "text": c.text} for c in chunks]
     sources_block = format_sources(chunks)

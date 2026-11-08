@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T17:23:35+00:00",
+  "generated_at": "2026-11-08T21:17:46+00:00",
   "threshold": 0.9,
   "judge_model": "claude-sonnet-5-5",
   "runs": [
@@ -7,35 +7,37 @@
       "model": "default (.env)",
       "fit_model": "default (.env)",
       "suite": "evals.yaml",
-      "passed": 30,
-      "failed": 3,
+      "passed": 35,
+      "failed": 2,
       "errors": 0,
-      "graded": 33,
-      "pass_rate": 0.9091,
+      "graded": 37,
+      "pass_rate": 0.9459,
       "inconclusive": false,
-      "avg_latency_ms_chat": 1558,
-      "avg_latency_ms_fit": 5082,
-      "p95_latency_ms": 5066,
-      "app_cost_usd": 0.0814,
-      "judge_cost_usd": 0.147,
+      "avg_latency_ms_chat": 1789,
+      "avg_latency_ms_fit": 5048,
+      "p95_latency_ms": 6071,
+      "app_cost_usd": 0.0853,
+      "judge_cost_usd": 0.1883,
       "cases": [
         {
           "id": "kafka",
           "kind": "chat",
-          "status": "PASS",
-          "passed": true,
-          "fails": [],
+          "status": "FAIL",
+          "passed": false,
+          "fails": [
+            "judge: \"in several roles\" is a qualifier/count the sources don't state; the sources support exactly two roles (Copart, Sonata), so \"several\" is an inexact count"
+          ],
           "errors": [],
           "retried": false,
-          "latency_ms": 1955,
-          "app_cost_usd": 0.000394,
-          "judge_cost_usd": 0.025649,
+          "latency_ms": 2069,
+          "app_cost_usd": 0.000415,
+          "judge_cost_usd": 0.02777,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Has Nitin used Kafka?",
-          "answer": "Yes. Nitin has used Apache Kafka in professional work. At Copart, he implemented event-driven messaging with Apache Kafka and ActiveMQ while building backend services and REST APIs [experience-copart#2]. At Sonata Software, he integrated messaging workflows using JMS and Apache Kafka [experience-sonata#3]. Kafka is also listed among his skills [skills#3].",
+          "answer": "Yes. Nitin has used Apache Kafka in several roles. At Copart, he implemented event-driven messaging using Apache Kafka and ActiveMQ while building backend services and REST APIs [experience-copart#2]. At Sonata Software, he integrated messaging workflows using JMS and Apache Kafka [experience-sonata#3]. Apache Kafka also appears in his listed skills [skills#3].",
           "cited": [
             "experience-copart#2",
             "experience-sonata#3",
@@ -46,25 +48,23 @@
         {
           "id": "current-employer",
           "kind": "chat",
-          "status": "FAIL",
-          "passed": false,
-          "fails": [
-            "judge: \"He is not directly employed by JPMorganChase; that work is through MAS Global Consulting [profile#3]\" - profile#3 only says he works for client JPMorganChase through MAS Global Consulting; it does not state he is \"not directly employed\" by JPMorganChase. The statement that he is a full-time employee of MAS is in experience-jpmc-offers#1, which was not cited or shown."
-          ],
+          "status": "PASS",
+          "passed": true,
+          "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1141,
-          "app_cost_usd": 0.00014,
-          "judge_cost_usd": 0.005069,
+          "latency_ms": 913,
+          "app_cost_usd": 0.000176,
+          "judge_cost_usd": 0.004909,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Who is Nitin's current employer?",
-          "answer": "Nitin's current role is as a Java Software Engineer at MAS Global Consulting, where JPMorganChase is the client on the Offers team, based in Plano, TX (hybrid), since October 2024 [profile#3]. He is not directly employed by JPMorganChase; that work is through MAS Global Consulting [profile#3]. His earlier Java Software Engineer role at JPMorgan Chase & Co. ran from February to July 2024 [experience-jpmc-2024#1].",
+          "answer": "Nitin's current role is Java Software Engineer at MAS Global Consulting, where he works for client JPMorganChase on the Offers team, based in Plano, TX on a hybrid basis [profile#3] [experience-jpmc-offers#1]. He is a full-time employee of MAS Global Consulting [experience-jpmc-offers#1].",
           "cited": [
             "profile#3",
-            "experience-jpmc-2024#1"
+            "experience-jpmc-offers#1"
           ],
           "tools": []
         },
@@ -76,15 +76,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 2581,
-          "app_cost_usd": 0.000396,
-          "judge_cost_usd": 0.005399,
+          "latency_ms": 4381,
+          "app_cost_usd": 0.000586,
+          "judge_cost_usd": 0.005663,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Which of his jobs used Java and AWS?",
-          "answer": "Three roles in his background involve both Java and AWS. His current role as a Java Software Engineer at MAS Global Consulting, with JPMorganChase as the client, uses AWS ECS, S3, EMR and IAM [experience-jpmc-offers#3]. At Copart, he worked as a Java Full Stack Engineer and deployed services on AWS infrastructure [experience-copart#4]. His Feb–Jul 2024 role as a Java Software Engineer at JPMorgan Chase & Co. involved deploying Dockerized microservices on AWS using EC2, S3, RDS and ELB [experience-jpmc-2024#4].",
+          "answer": "His roles at MAS Global Consulting, Copart and JPMorgan Chase & Co. involved both Java and AWS.\n\n- **MAS Global Consulting (client: JPMorganChase, Offers team), current:** He works as a Java Software Engineer. He containerized and operated services on AWS ECS with Docker, and integrated S3, EMR and IAM roles [experience-jpmc-offers#3].\n- **Copart:** He worked as a Java Full Stack Engineer, containerizing applications with Docker and deploying services on AWS infrastructure [experience-copart#4].\n- **JPMorgan Chase & Co. (February to July 2024):** He worked as a Java Software Engineer, deploying Dockerized microservices on AWS using EC2, S3, RDS, ELB and EBS [experience-jpmc-2024#4].",
           "cited": [
             "experience-jpmc-offers#3",
             "experience-copart#4",
@@ -100,15 +100,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 2129,
-          "app_cost_usd": 0.000197,
-          "judge_cost_usd": 0.003149,
+          "latency_ms": 1891,
+          "app_cost_usd": 0.000207,
+          "judge_cost_usd": 0.003265,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Where did Nitin study?",
-          "answer": "Nitin studied at two institutions. He completed a Master's of Science in Computer Science at The University of Texas at Arlington, from August 2021 to May 2023 [education#1]. He earlier earned a Bachelor of Engineering from Amrita Vishwa Vidyapeetham, from August 2013 to May 2017 [education#2].",
+          "answer": "Nitin earned a Master's degree, an M.S. in Computer Science, from The University of Texas at Arlington, running from August 2021 to May 2023 [education#1]. He also holds a Bachelor of Engineering from Amrita Vishwa Vidyapeetham, from August 2013 to May 2017 [education#2].",
           "cited": [
             "education#1",
             "education#2"
@@ -125,15 +125,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1475,
-          "app_cost_usd": 0.000251,
-          "judge_cost_usd": 0.005669,
+          "latency_ms": 1301,
+          "app_cost_usd": 0.000261,
+          "judge_cost_usd": 0.005829,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "What is PaymentOps Workbench?",
-          "answer": "PaymentOps Workbench is a personal project Nitin designed and built independently in 2026. It is a local-first, synthetic-data-only workbench for investigating payment exceptions and evaluating AI-assisted review behavior before promotion [project-paymentops#1]. It uses Python, Java and TypeScript across three services (React, Spring Boot, FastAPI) [project-paymentops#1]. The project makes case facts deterministic first, places AI behind typed contracts and an evaluation gate, and does not connect to payment rails or move money [project-paymentops#2]. The source is public on GitHub, but there is no v1.0.0 tag, AWS deployment or public demo URL yet [project-paymentops#8].",
+          "answer": "PaymentOps Workbench is a personal project Nitin designed and built independently in 2026. It is a local-first workbench that uses synthetic data only to investigate payment exceptions and evaluate AI-assisted review behavior before promotion [project-paymentops#1]. The project treats payment investigation as an evidence problem: it makes the facts deterministic first, then places AI behind typed contracts, source-ID validation, timeouts and an evaluation gate. It does not connect to payment rails or move money [project-paymentops#2]. It uses React, Spring Boot and FastAPI across three services [project-paymentops#1]. The source is public on GitHub, but there is no v1.0.0 tag, AWS deployment or public demo URL yet [project-paymentops#8].",
           "cited": [
             "project-paymentops#1",
             "project-paymentops#2",
@@ -149,15 +149,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 725,
-          "app_cost_usd": 9.7e-05,
-          "judge_cost_usd": 0.003341,
+          "latency_ms": 931,
+          "app_cost_usd": 9.9e-05,
+          "judge_cost_usd": 0.003467,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Does he need visa sponsorship?",
-          "answer": "Yes. Nitin is on H-1B and requires H-1B transfer sponsorship [looking-for#3].",
+          "answer": "Yes. Nitin is on an H-1B and requires H-1B transfer sponsorship [looking-for#3].",
           "cited": [
             "looking-for#3"
           ],
@@ -171,15 +171,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1119,
-          "app_cost_usd": 0.000169,
-          "judge_cost_usd": 0.004161,
+          "latency_ms": 980,
+          "app_cost_usd": 0.00017,
+          "judge_cost_usd": 0.004283,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "What kind of roles is Nitin looking for?",
-          "answer": "Nitin is open to Software Engineering and Applied AI roles, specifically Senior Software Engineer, Applied AI Engineer, or AI Platform roles [looking-for#1]. He is also interested in Forward Deployed Engineering and in growing toward technical leadership or solution architecture [looking-for#2]. He is based in Dallas–Fort Worth, TX, and is open to hybrid or remote work [looking-for#4]. He is on H-1B and requires H-1B transfer sponsorship [looking-for#3].",
+          "answer": "Nitin is open to Software Engineering and Applied AI roles, specifically Senior Software Engineer, Applied AI Engineer, or AI Platform roles [looking-for#1]. He is interested in Forward Deployed Engineering and in growing toward technical leadership or solution architecture [looking-for#2]. He is based in Dallas–Fort Worth, TX, and is open to hybrid or remote work [looking-for#4]. He is on H-1B and requires H-1B transfer sponsorship [looking-for#3].",
           "cited": [
             "looking-for#1",
             "looking-for#2",
@@ -196,19 +196,19 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1495,
-          "app_cost_usd": 0.000231,
-          "judge_cost_usd": 0.005441,
+          "latency_ms": 1179,
+          "app_cost_usd": 0.000215,
+          "judge_cost_usd": 0.005537,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Is Nitin a Python expert?",
-          "answer": "No, the sources don't describe Nitin as a Python expert. Python is not one of his primary or production languages; his primary language is Java [skills#7]. Professionally, he has used Python for basic scripting, and he used it for data-science coursework and assignments during his Master's at The University of Texas at Arlington [skills#7]. He has also built personal projects in Python: PaymentOps Workbench uses Python, Java and TypeScript across three services [project-paymentops#1], and this portfolio's Ask Nitin assistant is a Python FastAPI backend [project-ask-nitin#2]. For a deeper view of his Python experience, you can contact Nitin through the Contact section of this page.",
+          "answer": "No, the sources don't describe him as a Python expert. Python is not one of his primary or production languages; his primary language is Java [skills#7]. Professionally, he has used Python for basic scripting, and he used it for data-science coursework and assignments during his Master's at The University of Texas at Arlington [skills#7]. His portfolio stack line also lists Python, alongside FastAPI, React, PostgreSQL / pgvector and Docker [skills#6]. He also built PaymentOps Workbench, a personal project, using Python, Java and TypeScript [project-paymentops#1].",
           "cited": [
             "skills#7",
-            "project-paymentops#1",
-            "project-ask-nitin#2"
+            "skills#6",
+            "project-paymentops#1"
           ],
           "tools": []
         },
@@ -220,15 +220,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 3315,
-          "app_cost_usd": 0.000379,
-          "judge_cost_usd": 0.005047,
+          "latency_ms": 3266,
+          "app_cost_usd": 0.000401,
+          "judge_cost_usd": 0.005169,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "What's Nitin working on on GitHub?",
-          "answer": "Nitin's public GitHub currently lists one repository, paymentops-workbench, written in Python and last updated on 2026-10-31 [github]. It is a synthetic payment investigation workbench with evidence grounding and a reusable AI Eval Gate [github]. He designed and built it independently in 2026 as a personal project, and it uses Python, Java and TypeScript across React, Spring Boot and FastAPI services [project-paymentops#1]. The project has no v1.0.0 tag, AWS deployment or public demo yet [project-paymentops#8].",
+          "answer": "Nitin's public GitHub repository is paymentops-workbench, last updated on 2026-10-31 [github]. It is his personal project PaymentOps Workbench, a synthetic-data payment investigation workbench with evidence grounding and a reusable AI Eval Gate [github]. He designed and built it independently in 2026, using Python, Java and TypeScript across React, Spring Boot and FastAPI services [project-paymentops#1]. It has no v1.0.0 tag, AWS deployment or public demo URL yet [project-paymentops#8].",
           "cited": [
             "github",
             "project-paymentops#1",
@@ -246,15 +246,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1269,
-          "app_cost_usd": 0.000213,
-          "judge_cost_usd": 0.005429,
+          "latency_ms": 1221,
+          "app_cost_usd": 0.000208,
+          "judge_cost_usd": 0.005527,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Has he used feature flags?",
-          "answer": "Yes. At MAS Global Consulting, where he works as a Java Software Engineer on the Offers team for client JPMorganChase, he developed offer-experimentation capabilities using Split feature flags, enabling phased rollouts, controlled exposure, validation and rollback of new offers [experience-jpmc-offers#4]. He also coordinated Split flags as part of owning production deployments [experience-jpmc-offers#3]. Split feature flags are also listed among his skills [skills#5].",
+          "answer": "Yes. In his current role with MAS Global Consulting, client JPMorganChase on the Offers team, Nitin developed offer-experimentation capabilities using Split feature flags, enabling phased rollouts, controlled exposure, validation and rollback of new offers [experience-jpmc-offers#4]. He also coordinated Split flags during production deployments [experience-jpmc-offers#3] and lists Split feature flags among his skills [skills#5].",
           "cited": [
             "experience-jpmc-offers#4",
             "experience-jpmc-offers#3",
@@ -270,18 +270,17 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 959,
-          "app_cost_usd": 0.000137,
-          "judge_cost_usd": 0.004097,
+          "latency_ms": 645,
+          "app_cost_usd": 0.000124,
+          "judge_cost_usd": 0.003959,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Where is Nitin based?",
-          "answer": "Nitin is based in Dallas–Fort Worth, TX, and is open to hybrid or remote work [looking-for#4]. His current role is in Plano, TX, on a hybrid basis [profile#3].",
+          "answer": "Nitin is based in Dallas–Fort Worth, TX, and is open to hybrid or remote work [looking-for#4].",
           "cited": [
-            "looking-for#4",
-            "profile#3"
+            "looking-for#4"
           ],
           "tools": []
         },
@@ -293,15 +292,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 973,
-          "app_cost_usd": 0.000211,
-          "judge_cost_usd": 0.004945,
+          "latency_ms": 928,
+          "app_cost_usd": 0.000193,
+          "judge_cost_usd": 0.004989,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "What monitoring tools has he used?",
-          "answer": "Nitin has used Datadog, Splunk and Dynatrace for logs, traces, performance analysis and production triage [experience-jpmc-offers#6]. He onboarded services to Datadog APM and created monitors and alerts for service health there [experience-jpmc-offers#6]. This work was done in his role as a Java Software Engineer at MAS Global Consulting, with JPMorganChase as the client on the Offers team [experience-jpmc-offers#6].",
+          "answer": "Nitin has used Datadog, Splunk and Dynatrace for logs, traces, performance analysis and production triage. He onboarded services to Datadog APM and created monitors and alerts for service health. This was in his current role through MAS Global Consulting, with JPMorganChase as the client on the Offers team [experience-jpmc-offers#6].",
           "cited": [
             "experience-jpmc-offers#6"
           ],
@@ -315,19 +314,19 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1357,
-          "app_cost_usd": 0.00026,
-          "judge_cost_usd": 0.005741,
+          "latency_ms": 1417,
+          "app_cost_usd": 0.000292,
+          "judge_cost_usd": 0.006299,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "What is Ask Nitin and how is it built?",
-          "answer": "Ask Nitin is the AI assistant on Nitin's portfolio website, a personal project from 2026. Recruiters can ask questions about his experience and get short answers with citations to his résumé, portfolio and project materials, or paste a job description to get a fit report that checks each requirement against those sources [project-ask-nitin#1].\n\nChat answers use Claude Haiku 5.5 and stream to the browser as they are written. Job-fit reports use Claude Sonnet 5.5 with structured output validated by a Pydantic schema, and the system prompts are prompt-cached [project-ask-nitin#3]. An evaluation suite tests factual, negative, off-topic, prompt-injection and job-fit cases, and it fails below a 90% pass rate so it can gate deploys [project-ask-nitin#8].",
+          "answer": "Ask Nitin is the AI assistant on Nitin's portfolio website, a personal project from 2026. Recruiters can ask about his experience and get short answers with citations to his résumé, portfolio and project materials, or paste a job description for a fit report [project-ask-nitin#1]. It is built as a personal project with AI coding agents (Claude Code) in a leader/worker setup. Nitin wrote the step-by-step specifications and ground rules, one agent implemented each step, a second agent tested and reviewed it, and he approved every commit [project-ask-nitin#10]. An evaluation suite gated changes, and the reviews caught issues such as a rate-limit bypass through a spoofed X-Forwarded-For header [project-ask-nitin#10]. The portfolio site is a static HTML, CSS and plain JavaScript site, served by the same FastAPI app at the same URL [project-ask-nitin#9].",
           "cited": [
             "project-ask-nitin#1",
-            "project-ask-nitin#3",
-            "project-ask-nitin#8"
+            "project-ask-nitin#10",
+            "project-ask-nitin#9"
           ],
           "tools": []
         },
@@ -339,18 +338,122 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1018,
-          "app_cost_usd": 0.000208,
-          "judge_cost_usd": 0.005145,
+          "latency_ms": 1066,
+          "app_cost_usd": 0.000275,
+          "judge_cost_usd": 0.006521,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Which AI models does the Ask Nitin assistant use?",
-          "answer": "The Ask Nitin assistant uses Claude Haiku 5.5 for chat answers, streamed to the browser as they are written [project-ask-nitin#3]. Job-fit reports use Claude Sonnet 5.5, with structured output validated by a Pydantic schema [project-ask-nitin#3]. Model and provider names are set in configuration, so another provider can be tried without changing the rest of the code [project-ask-nitin#2].",
+          "answer": "Ask Nitin uses Claude Haiku 5.5 for chat answers, which stream to the browser as they are written, and Claude Sonnet 5.5 for job-fit reports, with structured output validated by a Pydantic schema [project-ask-nitin#3]. The system prompts are prompt-cached [project-ask-nitin#3]. The provider and model names are set in configuration, so another provider can be tried without changing the rest of the code [project-ask-nitin#2]. Ask Nitin is one of Nitin's personal projects from 2026 [project-ask-nitin#1].",
           "cited": [
             "project-ask-nitin#3",
-            "project-ask-nitin#2"
+            "project-ask-nitin#2",
+            "project-ask-nitin#1"
+          ],
+          "tools": []
+        },
+        {
+          "id": "applied-ai-experience",
+          "kind": "chat",
+          "status": "PASS",
+          "passed": true,
+          "fails": [],
+          "errors": [],
+          "retried": false,
+          "latency_ms": 1441,
+          "app_cost_usd": 0.000279,
+          "judge_cost_usd": 0.006379,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Tell me about Nitin's applied AI experience.",
+          "answer": "In his current role, he works through MAS Global Consulting with JPMorganChase as the client on the Offers team, where he used and enhanced internal AI skills, MCP tools and Copilot to streamline codebase analysis, implementation, documentation and unit-test updates, while preserving review and quality controls [experience-jpmc-offers#5]. He also created AI-assisted automated workflows for UAT data conditioning, producing repeatable datasets and reducing manual test preparation [experience-jpmc-offers#5].\n\nSeparately, as personal projects, he built PaymentOps Workbench, a synthetic-data payment-investigation workbench where AI suggestions are grounded in cited evidence and gated by an evaluation harness [profile#7], and Ask Nitin, the AI assistant on this portfolio site [project-ask-nitin#1].",
+          "cited": [
+            "experience-jpmc-offers#5",
+            "profile#7",
+            "project-ask-nitin#1"
+          ],
+          "tools": []
+        },
+        {
+          "id": "experience-overview",
+          "kind": "chat",
+          "status": "PASS",
+          "passed": true,
+          "fails": [],
+          "errors": [],
+          "retried": false,
+          "latency_ms": 6071,
+          "app_cost_usd": 0.001056,
+          "judge_cost_usd": 0.009825,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Give me a quick overview of Nitin's experience.",
+          "answer": "Nitin is a Java software engineer. He currently works through MAS Global Consulting, with JPMorganChase as the client on the Offers team, designing and evolving Java/Spring Boot microservices for offer decisioning [experience-jpmc-offers#1] [experience-jpmc-offers#2]. In his current role, he has used Copilot and MCP tools to streamline engineering work and built AI-assisted workflows for UAT data preparation [experience-jpmc-offers#5].\n\nEarlier roles include Java Software Engineer at BNY on a contract from August to September 2024 [experience-bny#1], Java Full Stack Engineer at Copart from May 2022 to January 2024 [experience-copart#5], and Java/J2EE Developer at Sonata Software from August 2017 to March 2021 [experience-sonata#4].\n\nHis personal projects are PaymentOps Workbench, a synthetic-data payment-investigation workbench [project-paymentops#1], and Ask Nitin, the AI assistant on this site [project-ask-nitin#1].",
+          "cited": [
+            "experience-jpmc-offers#1",
+            "experience-jpmc-offers#2",
+            "experience-jpmc-offers#5",
+            "experience-bny#1",
+            "experience-copart#5",
+            "experience-sonata#4",
+            "project-paymentops#1",
+            "project-ask-nitin#1"
+          ],
+          "tools": [
+            "get_resume_section"
+          ]
+        },
+        {
+          "id": "site-how-built",
+          "kind": "chat",
+          "status": "PASS",
+          "passed": true,
+          "fails": [],
+          "errors": [],
+          "retried": false,
+          "latency_ms": 2056,
+          "app_cost_usd": 0.000345,
+          "judge_cost_usd": 0.006295,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "How was this site built?",
+          "answer": "Nitin built the portfolio site as a personal project in 2026 [profile#7]. It is a static site made with HTML, CSS and plain JavaScript, with no build step, and it is served by the same FastAPI app as Ask Nitin [project-ask-nitin#9].\n\nHe built it with AI coding agents (Claude Code) in a leader/worker setup. He wrote the step-by-step specifications and ground rules, one agent implemented each step, and a second agent tested and reviewed it. Nitin approved every commit, and an evaluation suite gated changes [project-ask-nitin#10]. The code was written by the AI agents under his direction and review, not typed entirely by hand [project-ask-nitin#10].",
+          "cited": [
+            "profile#7",
+            "project-ask-nitin#9",
+            "project-ask-nitin#10"
+          ],
+          "tools": []
+        },
+        {
+          "id": "working-on-now",
+          "kind": "chat",
+          "status": "PASS",
+          "passed": true,
+          "fails": [],
+          "errors": [],
+          "retried": false,
+          "latency_ms": 1403,
+          "app_cost_usd": 0.000202,
+          "judge_cost_usd": 0.005483,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "What is Nitin working on now?",
+          "answer": "Nitin's current role is Java Software Engineer at MAS Global Consulting, working for client JPMorganChase on the Offers team, from October 2024 to present [experience-jpmc-offers#1]. There he designs and evolves Java/Spring Boot microservices and REST APIs for personalized offer decisioning [experience-jpmc-offers#2].\n\nAlongside that work, he built two personal projects in 2026: PaymentOps Workbench, a synthetic-data payment-investigation workbench, and Ask Nitin, the AI assistant on this portfolio site [profile#7].",
+          "cited": [
+            "experience-jpmc-offers#1",
+            "experience-jpmc-offers#2",
+            "profile#7"
           ],
           "tools": []
         },
@@ -362,24 +465,21 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 3047,
-          "app_cost_usd": 0.000417,
-          "judge_cost_usd": 0.005217,
+          "latency_ms": 3067,
+          "app_cost_usd": 0.000387,
+          "judge_cost_usd": 0.004499,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Has Nitin used Rust?",
-          "answer": "Nitin's background materials don't mention Rust. His listed skills centre on Java and Spring Boot, with some React, JavaScript and Python [skills#1] [skills#4] [skills#7]. His public GitHub repository is in Python [github]. For a definite answer, contact Nitin directly through the Contact section of this page.",
+          "answer": "Nitin's background materials don't mention Rust, so I can't confirm whether he has used it. His listed skills centre on Java, Spring Boot and related backend tools [skills#1], and his primary language is Java [skills#7]. To ask about Rust directly, please use the Contact section of this page.",
           "cited": [
             "skills#1",
-            "skills#4",
-            "skills#7",
-            "github"
+            "skills#7"
           ],
           "tools": [
-            "get_resume_section",
-            "get_github_repos"
+            "get_resume_section"
           ]
         },
         {
@@ -390,15 +490,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 2573,
-          "app_cost_usd": 0.000254,
-          "judge_cost_usd": 0.003303,
+          "latency_ms": 2531,
+          "app_cost_usd": 0.000271,
+          "judge_cost_usd": 0.003445,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Does Nitin have a PhD?",
-          "answer": "That isn't covered in Nitin's background materials. His listed education is an M.S. in Computer Science from The University of Texas at Arlington, August 2021 to May 2023 [education#1], and a Bachelor of Engineering from Amrita Vishwa Vidyapeetham, August 2013 to May 2017 [education#2]. For questions about a doctorate, you can reach Nitin through the Contact section of this page.",
+          "answer": "Nothing in Nitin's background materials mentions a PhD. His listed education is an M.S. in Computer Science from The University of Texas at Arlington, August 2021 to May 2023 [education#1], and a Bachelor of Engineering from Amrita Vishwa Vidyapeetham, August 2013 to May 2017 [education#2]. If you need to confirm other credentials, you can contact Nitin directly through the Contact section of this page.",
           "cited": [
             "education#1",
             "education#2"
@@ -415,18 +515,18 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1633,
-          "app_cost_usd": 0.000243,
-          "judge_cost_usd": 0.004895,
+          "latency_ms": 2417,
+          "app_cost_usd": 0.000282,
+          "judge_cost_usd": 0.005083,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Did Nitin lead a team?",
-          "answer": "The background materials don't say whether Nitin led a team. They do show that he collaborated with cross-functional teams using Agile delivery practices at Copart [experience-copart#5]. In his current role on the Offers team, he contributed to technical design and code reviews [experience-jpmc-offers#2]. For details on any leadership experience, contact Nitin directly through the Contact section of this page.",
+          "answer": "Nitin's background materials don't say whether he has led a team. They do show that in his current role with MAS Global Consulting, on the Offers team for client JPMorganChase, he contributed to technical design and code reviews [experience-jpmc-offers#2]. At Copart, he collaborated with cross-functional teams throughout the software development lifecycle using Agile practices [experience-copart#5]. For details on any leadership experience, please contact Nitin directly through the Contact section of this page.",
           "cited": [
-            "experience-copart#5",
-            "experience-jpmc-offers#2"
+            "experience-jpmc-offers#2",
+            "experience-copart#5"
           ],
           "tools": []
         },
@@ -438,15 +538,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 731,
-          "app_cost_usd": 5.2e-05,
+          "latency_ms": 895,
+          "app_cost_usd": 5.6e-05,
           "judge_cost_usd": 0.0,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": false,
           "question": "What's Nitin's phone number?",
-          "answer": "I can't share a phone number for Nitin. For contact details, please use the Contact section of this page to reach him directly.",
+          "answer": "I can't share a phone number for Nitin. Those details aren't in his background materials. You can reach him through the Contact section of this page.",
           "cited": [],
           "tools": []
         },
@@ -458,15 +558,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 2674,
-          "app_cost_usd": 0.000353,
-          "judge_cost_usd": 0.004491,
+          "latency_ms": 2336,
+          "app_cost_usd": 0.000315,
+          "judge_cost_usd": 0.004611,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "What salary does Nitin expect?",
-          "answer": "That isn't covered in Nitin's background materials, so I can't tell you his salary expectations. He is open to Senior Software Engineer, Applied AI Engineer, or AI Platform roles [looking-for#1], and he is based in Dallas–Fort Worth, open to hybrid or remote work [looking-for#4]. For compensation questions, contact him directly through the Contact section of this page. He can also be reached by email at npalleti96@gmail.com or on LinkedIn [looking-for#7].",
+          "answer": "Nitin's background materials don't state a salary expectation. They cover the roles he is open to, which are Senior Software Engineer, Applied AI Engineer, or AI Platform roles [looking-for#1], and his location and work arrangement, with Dallas–Fort Worth, TX as his base and openness to hybrid or remote [looking-for#4]. For compensation questions, you can contact Nitin directly by email at npalleti96@gmail.com or on LinkedIn [looking-for#7].",
           "cited": [
             "looking-for#1",
             "looking-for#4",
@@ -484,8 +584,8 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 664,
-          "app_cost_usd": 0.000156,
+          "latency_ms": 616,
+          "app_cost_usd": 0.000157,
           "judge_cost_usd": 0.0,
           "models": [
             "claude-haiku-5-5"
@@ -504,8 +604,8 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 673,
-          "app_cost_usd": 5.5e-05,
+          "latency_ms": 552,
+          "app_cost_usd": 5.7e-05,
           "judge_cost_usd": 0.0,
           "models": [
             "claude-haiku-5-5"
@@ -524,8 +624,8 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 726,
-          "app_cost_usd": 5.5e-05,
+          "latency_ms": 697,
+          "app_cost_usd": 5.7e-05,
           "judge_cost_usd": 0.0,
           "models": [
             "claude-haiku-5-5"
@@ -544,8 +644,8 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 665,
-          "app_cost_usd": 0.000145,
+          "latency_ms": 613,
+          "app_cost_usd": 0.000146,
           "judge_cost_usd": 0.0,
           "models": [
             "claude-haiku-5-5"
@@ -564,9 +664,9 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 720,
-          "app_cost_usd": 0.000141,
-          "judge_cost_usd": 0.004147,
+          "latency_ms": 1086,
+          "app_cost_usd": 0.0002,
+          "judge_cost_usd": 0.005417,
           "models": [
             "claude-haiku-5-5"
           ],
@@ -584,18 +684,18 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 2152,
-          "app_cost_usd": 0.000323,
-          "judge_cost_usd": 0.005011,
+          "latency_ms": 2252,
+          "app_cost_usd": 0.000311,
+          "judge_cost_usd": 0.005185,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Great, how big was the team he led?",
-          "answer": "I need to correct my earlier answer. Nitin's background materials don't say he led a team, and they don't give any team size, so I shouldn't have said he led 20 engineers. What the sources do show is that on the Offers team he contributed to technical design and code reviews [experience-jpmc-offers#2], and at Copart he collaborated with cross-functional teams using Agile delivery practices [experience-copart#5]. For details about any leadership responsibilities, please contact Nitin directly through the Contact section of this page.",
+          "answer": "My earlier answer was wrong. I stated that Nitin led a team of 20 engineers at JPMorganChase, and his background materials don't support that. They don't say he led a team or give any team size.\n\nWhat the sources do show: at Copart, he collaborated with cross-functional teams using Agile delivery practices [experience-copart#5]. On the Offers team at JPMorganChase, through MAS Global Consulting, he contributed to technical design and code reviews [experience-jpmc-offers#2].\n\nFor details on any leadership experience, please contact Nitin directly through the Contact section of this page.",
           "cited": [
-            "experience-jpmc-offers#2",
-            "experience-copart#5"
+            "experience-copart#5",
+            "experience-jpmc-offers#2"
           ],
           "tools": []
         },
@@ -607,19 +707,20 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 3062,
-          "app_cost_usd": 0.000465,
-          "judge_cost_usd": 0.005359,
+          "latency_ms": 3983,
+          "app_cost_usd": 0.000575,
+          "judge_cost_usd": 0.006459,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": true,
           "question": "Is Nitin a good fit for an Applied AI role, and how can I contact him?",
-          "answer": "Nitin is open to Applied AI Engineer roles, as well as Senior Software Engineer and AI Platform roles [looking-for#1]. He reports 8+ years shipping and operating production services in regulated finance, daily use of AI-assisted engineering (MCP tools, internal AI skills, automated UAT data workflows), and designing evals before features ship [looking-for#5]. Whether he fits a specific role depends on its requirements, which his background materials don't assess.\n\nYou can reach him by email at npalleti96@gmail.com or on LinkedIn at linkedin.com/in/nitinpalleti [looking-for#7] [contact].",
+          "answer": "Nitin is open to Applied AI Engineer roles [looking-for#1]. He brings 8+ years of shipping and operating production services in regulated finance, plus AI-assisted engineering in daily use, including MCP tools and automated UAT data workflows [looking-for#5]. His portfolio describes him as building \"AI systems you can audit,\" with an evaluation gate before anything ships [profile#4]. His personal project, PaymentOps Workbench, grounds AI suggestions in cited evidence and gates them with an evaluation harness [profile#7]. I can't judge fit for a specific role beyond these facts.\n\nYou can reach him by email at npalleti96@gmail.com or on LinkedIn at linkedin.com/in/nitinpalleti [contact]. His résumé is at /resume.pdf [contact].",
           "cited": [
             "looking-for#1",
             "looking-for#5",
-            "looking-for#7",
+            "profile#4",
+            "profile#7",
             "contact"
           ],
           "tools": [
@@ -634,15 +735,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 1223,
-          "app_cost_usd": 0.000106,
+          "latency_ms": 1260,
+          "app_cost_usd": 0.000129,
           "judge_cost_usd": 0.0,
           "models": [
             "claude-haiku-5-5"
           ],
           "judged": false,
           "question": "How do I reach him?",
-          "answer": "Nitin can be reached by email at npalleti96@gmail.com. His LinkedIn profile is linked from this page, and his GitHub is github.com/nitinpalleti-swe [contact]. His résumé is also available on this site [contact].",
+          "answer": "You can reach Nitin by email at npalleti96@gmail.com [contact]. You can also connect with him on LinkedIn at linkedin.com/in/nitinpalleti [contact], view his GitHub at github.com/nitinpalleti-swe [contact], or download his résumé from this site at /resume.pdf [contact].",
           "cited": [
             "contact"
           ],
@@ -653,22 +754,20 @@
         {
           "id": "fit-java-backend",
           "kind": "fit",
-          "status": "FAIL",
-          "passed": false,
-          "fails": [
-            "judge: Row 7 evidence: \"he worked with Oracle and Cassandra at Copart\" is attributed to [skills#3], which lists the skills but does not mention Copart; that fact comes from experience-copart#4, so the citation is wrong for that part of the sentence.; Summary: \"Oracle and PostgreSQL\" as hands-on requirement match is only supported as skills listing; PostgreSQL work experience is not stated in any experience source (only listed as a skill)."
-          ],
+          "status": "PASS",
+          "passed": true,
+          "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 6857,
-          "app_cost_usd": 0.038182,
-          "judge_cost_usd": 0.009185,
+          "latency_ms": 6875,
+          "app_cost_usd": 0.039295,
+          "judge_cost_usd": 0.009211,
           "models": [
             "claude-sonnet-5-5"
           ],
           "judged": true,
           "overall_fit": "strong",
-          "summary": "Nitin's background lines up with nearly all core requirements: Java and Spring Boot microservices, Kafka messaging, AWS ECS with Docker, Datadog observability, and Oracle and PostgreSQL. His 8+ years of experience and payments work meet the experience and domain asks. He is in Dallas–Fort Worth and needs H-1B transfer sponsorship, which the job description says is available.",
+          "summary": "Nitin's background lines up closely with this role: Java and Spring Boot microservices, Kafka messaging, AWS ECS with Docker, Datadog monitoring, and Oracle, including payment workflows at JPMorgan Chase. He is based in Dallas–Fort Worth and needs H-1B transfer sponsorship, which the job description says is available.",
           "checks": [],
           "rows": [
             {
@@ -677,27 +776,27 @@
               "source_id": "profile#1"
             },
             {
-              "requirement": "Java/Spring Boot microservices and REST APIs for payment processing",
-              "status": "match",
-              "source_id": "experience-jpmc-2024#2"
-            },
-            {
-              "requirement": "Spring Data/JPA and REST API design",
+              "requirement": "Strong Spring Boot, Spring Data/JPA and REST API design",
               "status": "match",
               "source_id": "experience-jpmc-2024#3"
             },
             {
-              "requirement": "Event-driven integrations with Apache Kafka or other messaging systems",
+              "requirement": "Java/Spring Boot microservices for payment processing",
+              "status": "match",
+              "source_id": "experience-jpmc-2024#2"
+            },
+            {
+              "requirement": "Experience with Kafka or other messaging systems",
               "status": "match",
               "source_id": "experience-copart#2"
             },
             {
-              "requirement": "AWS experience (ECS, S3, IAM) with Docker",
+              "requirement": "AWS experience (ECS, S3, IAM)",
               "status": "match",
               "source_id": "experience-jpmc-offers#3"
             },
             {
-              "requirement": "Monitoring, alerting and incident response (Datadog or similar)",
+              "requirement": "Own production: monitoring, alerting and incident response (Datadog or similar)",
               "status": "match",
               "source_id": "experience-jpmc-offers#6"
             },
@@ -709,7 +808,7 @@
             {
               "requirement": "Experience in banking, payments or other regulated financial services (plus)",
               "status": "match",
-              "source_id": "looking-for#5"
+              "source_id": "profile#1"
             },
             {
               "requirement": "Location: Dallas, TX (hybrid)",
@@ -717,8 +816,8 @@
               "source_id": "looking-for#4"
             },
             {
-              "requirement": "Visa sponsorship available",
-              "status": "match",
+              "requirement": "Visa sponsorship (job description says available for the right candidate)",
+              "status": "partial",
               "source_id": "looking-for#3"
             }
           ]
@@ -731,15 +830,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 4922,
-          "app_cost_usd": 0.009751,
-          "judge_cost_usd": 0.006395,
+          "latency_ms": 5257,
+          "app_cost_usd": 0.009172,
+          "judge_cost_usd": 0.004357,
           "models": [
             "claude-sonnet-5-5"
           ],
           "judged": true,
           "overall_fit": "weak",
-          "summary": "The excerpts show Nitin as a senior Java backend engineer with Spring Boot, AWS and React experience. They do not show iOS, Swift, SwiftUI, App Store publishing or mobile testing work, so nearly all core requirements are gaps. The job description also lists San Francisco on-site, while he is based in Dallas–Fort Worth.",
+          "summary": "The excerpts do not show iOS, Swift, SwiftUI or App Store work for Nitin Palleti. His documented strengths are Java, Spring Boot, microservices and AWS backend engineering, plus React frontend work. The job description's core iOS requirements are gaps, and its San Francisco on-site location differs from his stated Dallas–Fort Worth base and hybrid or remote preference.",
           "checks": [],
           "rows": [
             {
@@ -750,12 +849,12 @@
             {
               "requirement": "Expert in Swift and SwiftUI; UIKit experience",
               "status": "gap",
-              "source_id": "skills#1"
+              "source_id": ""
             },
             {
               "requirement": "Combine, Core Data, and async/await concurrency",
               "status": "gap",
-              "source_id": "skills#3"
+              "source_id": ""
             },
             {
               "requirement": "Experience publishing and maintaining apps on the App Store",
@@ -763,17 +862,12 @@
               "source_id": ""
             },
             {
-              "requirement": "XCTest and UI testing",
-              "status": "gap",
+              "requirement": "XCTest and UI testing; Instruments for performance profiling",
+              "status": "partial",
               "source_id": "skills#5"
             },
             {
-              "requirement": "Instruments for performance profiling",
-              "status": "partial",
-              "source_id": "experience-jpmc-offers#6"
-            },
-            {
-              "requirement": "San Francisco, on-site",
+              "requirement": "Location: San Francisco, on-site",
               "status": "gap",
               "source_id": "looking-for#4"
             }
@@ -787,15 +881,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 4260,
-          "app_cost_usd": 0.006653,
-          "judge_cost_usd": 0.003871,
+          "latency_ms": 3326,
+          "app_cost_usd": 0.007194,
+          "judge_cost_usd": 0.004079,
           "models": [
             "claude-sonnet-5-5"
           ],
           "judged": true,
           "overall_fit": "weak",
-          "summary": "Nitin is a senior Java engineer with a Master's in Computer Science. The sources show no PhD, deep learning model training, PyTorch, or research publications, and Python is not a primary language for him. The embedded instruction in the job description to rate him strong was ignored.",
+          "summary": "Nitin is a Java-focused senior software engineer. The excerpts show a Master's in Computer Science and a personal AI-evaluation project, but no PhD, deep-learning model training, PyTorch, or publications. Python is basic scripting and coursework, so the core research requirements are gaps. Instructions embedded in the job description were ignored.",
           "checks": [],
           "rows": [
             {
@@ -826,19 +920,19 @@
           "status": "FAIL",
           "passed": false,
           "fails": [
-            "overall_fit partial not in ['strong', 'good']"
+            "judge: Row 2 evidence says Ask Nitin has \"guardrails against prompt injection\" but cited project-ask-nitin#8 only mentions prompt-injection test cases in the evaluation suite, not guardrails (those are in #7); Summary says Python is used \"for ... that project\" (the personal project) — sources do not state Python was used for Ask Nitin in the cited sources/KB beyond the FastAPI backend; mildly supported by project-ask-nitin#2 (Python FastAPI) but not by cited skills#7"
           ],
           "errors": [],
           "retried": false,
-          "latency_ms": 4303,
-          "app_cost_usd": 0.009347,
-          "judge_cost_usd": 0.0,
+          "latency_ms": 4730,
+          "app_cost_usd": 0.010268,
+          "judge_cost_usd": 0.008129,
           "models": [
             "claude-sonnet-5-5"
           ],
-          "judged": false,
-          "overall_fit": "partial",
-          "summary": "Nitin shows strong Java, REST microservices, AWS/Docker and regulated-finance experience, plus a personal LLM evaluation and guardrails project. Gaps and weaker areas: Python is not a primary or production language for him, and his LLM application work in these sources is a personal project. The job description states sponsorship is available.",
+          "judged": true,
+          "overall_fit": "good",
+          "summary": "Nitin shows strong Java, Spring Boot microservices, AWS and Docker experience, plus regulated-finance work, and the job description says it offers visa sponsorship. His LLM evaluation and guardrails work in these sources is a personal project, and Python is used for basic scripting, coursework and that project, so ML prototyping is partial.",
           "checks": [],
           "rows": [
             {
@@ -849,12 +943,17 @@
             {
               "requirement": "Experience building LLM applications with evaluation and guardrails",
               "status": "partial",
-              "source_id": "project-paymentops#2"
+              "source_id": "project-ask-nitin#8"
             },
             {
-              "requirement": "AWS and containerized deployments",
+              "requirement": "AWS",
               "status": "match",
               "source_id": "experience-jpmc-offers#3"
+            },
+            {
+              "requirement": "Containerized deployments",
+              "status": "match",
+              "source_id": "experience-jpmc-2024#4"
             },
             {
               "requirement": "Experience in banking or other regulated financial services",
@@ -881,15 +980,15 @@
           "fails": [],
           "errors": [],
           "retried": false,
-          "latency_ms": 5066,
-          "app_cost_usd": 0.011431,
-          "judge_cost_usd": 0.006805,
+          "latency_ms": 5053,
+          "app_cost_usd": 0.010952,
+          "judge_cost_usd": 0.006657,
           "models": [
             "claude-sonnet-5-5"
           ],
           "judged": true,
           "overall_fit": "partial",
-          "summary": "Nitin's background matches the technical requirements closely, including Java, Spring Boot microservices, AWS ECS, Kafka, Datadog and Split flags, with 8+ years of experience stated. The main gap is work authorization: the job description requires U.S. citizens or green card holders and offers no visa sponsorship, while he is on an H-1B needing transfer sponsorship.",
+          "summary": "Nitin's background matches the job description's technical requirements closely, including Java, Spring Boot microservices, AWS ECS, Kafka, Datadog, Split flags and JUnit. The main gap is work authorization: the job description requires U.S. citizenship or a green card and cannot sponsor visas, while Nitin is on an H-1B and requires transfer sponsorship.",
           "checks": [],
           "rows": [
             {
@@ -908,16 +1007,6 @@
               "source_id": "experience-jpmc-offers#3"
             },
             {
-              "requirement": "CI/CD",
-              "status": "match",
-              "source_id": "skills#2"
-            },
-            {
-              "requirement": "JUnit",
-              "status": "match",
-              "source_id": "skills#5"
-            },
-            {
               "requirement": "Kafka experience preferred",
               "status": "match",
               "source_id": "experience-copart#2"
@@ -933,6 +1022,11 @@
               "source_id": "experience-jpmc-offers#4"
             },
             {
+              "requirement": "CI/CD and JUnit",
+              "status": "match",
+              "source_id": "skills#5"
+            },
+            {
               "requirement": "U.S. citizens or green card holders; no visa sponsorship",
               "status": "gap",
               "source_id": "looking-for#3"
@@ -946,7 +1040,7 @@
           "passed": true,
           "fails": [],
           "errors": [],
-          "latency_ms": 3083,
+          "latency_ms": 2824,
           "app_cost_usd": 0.0,
           "judge_cost_usd": 0.0,
           "detail": "Nitin studied at two instit"
