@@ -80,3 +80,46 @@
 .chat-contact { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .65rem; }
 .chat-contact .btn { padding: .4rem .75rem; font-size: .8rem; }
 .chat-tools { align-self: flex-start; margin: -.4rem 0 0 .25rem; font-size: .68rem; color: var(--muted); }
+
+/* tabs */
+.chat-tabs { display: flex; gap: .25rem; padding: .5rem .75rem 0; border-bottom: 1px solid var(--line); }
+.chat-tabs button {
+  font: 500 .82rem var(--sans); color: var(--ink-2); background: none; border: 0; cursor: pointer;
+  padding: .45rem .7rem; border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.chat-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.chat-panel.wide { width: min(640px, calc(100vw - 32px)); height: min(720px, calc(100vh - 110px)); }
+.chat-log[hidden], .chat-form[hidden], .chat-fit[hidden] { display: none; }
+
+/* job fit */
+.chat-fit { position: relative; flex: 1; overflow-y: auto; padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 1rem; }
+.fit-form { display: flex; flex-direction: column; gap: .5rem; }
+.fit-label { font-size: .86rem; color: var(--ink-2); }
+.fit-form textarea {
+  font: inherit; font-size: .86rem; line-height: 1.45; color: var(--ink); background: var(--bg); resize: vertical;
+  border: 1px solid var(--line); border-radius: 12px; padding: .65rem .8rem; min-height: 9rem;
+}
+.fit-form textarea:focus { outline: none; border-color: var(--accent); }
+.fit-actions { display: flex; align-items: center; justify-content: space-between; }
+.fit-count { font-size: .7rem; color: var(--muted); }
+.fit-loading { display: flex; align-items: center; gap: .6rem; font-size: .78rem; color: var(--muted); margin: 0; }
+.fit-summary { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: .9rem 1rem; }
+.fit-title { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; }
+.fit-title h3 { font-size: 1.15rem; }
+.fit-summary p { margin: .5rem 0 0; font-size: .88rem; color: var(--ink-2); }
+.fit-summary .fit-tally { font-size: .72rem; color: var(--muted); }
+.fit-badge { font: 500 .72rem var(--mono); padding: .2rem .6rem; border-radius: 99px; white-space: nowrap; }
+.fit-badge.fit-strong, .fit-badge.fit-good { background: var(--accent-soft); color: var(--accent); }
+.fit-badge.fit-partial { background: var(--warn-soft); color: var(--warn); }
+.fit-badge.fit-weak { background: var(--fail-soft); color: var(--fail); }
+.fit-table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+.fit-table th { text-align: left; font: 500 .7rem var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: 0 .4rem .4rem; }
+.fit-table td { padding: .6rem .4rem; border-top: 1px solid var(--line); vertical-align: top; }
+.fit-table .fit-icon { width: 2rem; text-align: center; }
+.fit-table strong { display: block; font-weight: 600; }
+.fit-evidence { display: block; color: var(--ink-2); margin-top: .15rem; }
+.fit-checks { font-size: .78rem; color: var(--muted); }
+.fit-checks summary { cursor: pointer; font-size: .72rem; }
+.fit-checks ul { margin: .4rem 0 0; padding-left: 1.1rem; }
+.chat-fit .chat-foot { padding: 0; background: none; }
+@media (max-width: 640px) { .chat-panel.wide { width: 100vw; height: 100dvh; } }

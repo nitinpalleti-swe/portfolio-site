@@ -30,6 +30,18 @@
       </div>
       <button class="chat-close" type="button" aria-label="Close chat">×</button>
     </header>
+    <div class="chat-tabs" role="tablist">
+      <button type="button" role="tab" data-tab="ask" aria-selected="true">Ask</button>
+      <button type="button" role="tab" data-tab="fit" aria-selected="false">Check fit for a role</button>
+    </div>
+    <div class="chat-fit" hidden>
+      <form class="fit-form">
+        <label class="fit-label" for="fitInput">Paste a job description. Each requirement is checked against Nitin's sources.</label>
+        <textarea id="fitInput" rows="7" minlength="50" maxlength="8000" placeholder="Paste the job description here…" required></textarea>
+        <div class="fit-actions"><span class="fit-count mono">0 / 8000</span><button class="chat-send" type="submit">Check fit</button></div>
+      </form>
+      <div class="fit-result" aria-live="polite"></div>
+    </div>
     <div class="chat-log" aria-live="polite"></div>
     <form class="chat-form">
       <label class="sr-only" for="chatInput">Your question</label>
@@ -55,11 +67,32 @@
   });
   log.append(intro);
 
+  /* ── Tabs: Ask | Check fit for a role ────────── */
+  const fitPane = panel.querySelector(".chat-fit");
+  const fitForm = panel.querySelector(".fit-form");
+  const fitInput = panel.querySelector("#fitInput");
+  const fitSend = fitForm.querySelector(".chat-send");
+  const fitCount = panel.querySelector(".fit-count");
+  const fitResult = panel.querySelector(".fit-result");
+  let tab = "ask";
+  function showTab(name) {
+    tab = name;
+    panel.querySelectorAll(".chat-tabs [role=tab]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+    const fitOn = name === "fit";
+    fitPane.hidden = !fitOn;
+    log.hidden = fitOn;
+    form.hidden = fitOn;
+    panel.classList.toggle("wide", fitOn);
+    pop.hidden = true;
+    (fitOn ? fitInput : input).focus();
+  }
+  panel.querySelectorAll(".chat-tabs [role=tab]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
   /* ── Open / close ────────────────────────────── */
   function open() {
     panel.hidden = false;
     fab.setAttribute("aria-expanded", "true");
-    input.focus();
+    (tab === "fit" ? fitInput : input).focus();
   }
   function close() {
     panel.hidden = true;
@@ -157,6 +190,72 @@
     }
   }
 
+  /* ── Job fit ─────────────────────────────────── */
+  const FIT_STATUS = { match: ["✅", "Match"], partial: ["⚠️", "Partial"], gap: ["❌", "Gap"] };
+  const FIT_LABEL = { strong: "Strong fit", good: "Good fit", partial: "Partial fit", weak: "Weak fit" };
+
+  fitInput.addEventListener("input", () => (fitCount.textContent = `${fitInput.value.length} / 8000`));
+  fitForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const jd = fitInput.value.trim();
+    if (jd.length < 50) {
+      fitResult.innerHTML = `<p class="chat-msg error">Please paste a full job description (at least 50 characters).</p>`;
+      return;
+    }
+    fitSend.disabled = true;
+    fitSend.textContent = "Checking…";
+    fitResult.innerHTML = `<p class="fit-loading mono" role="status"><span class="chat-typing" aria-hidden="true"><span></span><span></span><span></span></span> <span class="fit-stage">Reading the job description…</span></p>`;
+    // The request is one call (usually 4–8 s); the stage text is time-based, to show it's still working.
+    const stageEl = fitResult.querySelector(".fit-stage");
+    const stages = [[2000, "Checking evidence against his sources…"], [10000, "Still working, almost there…"]];
+    const timers = stages.map(([ms, text]) => setTimeout(() => (stageEl.textContent = text), ms));
+    try {
+      const res = await fetch("/api/fit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ job_description: jd }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof body.error === "string" ? body.error : "Something went wrong. Please try again.");
+      renderFit(body);
+    } catch (err) {
+      fitResult.innerHTML = "";
+      fitResult.append(el("p", { class: "chat-msg error" }, escapeHtml(err.message || "Something went wrong. Please try again.")));
+    } finally {
+      timers.forEach(clearTimeout);
+      fitSend.disabled = false;
+      fitSend.textContent = "Check fit";
+    }
+  });
+
+  function renderFit(r) {
+    const sources = r.sources || {};
+    const numbers = {};
+    const chip = (id) => {
+      if (!id || !sources[id]) return "";
+      numbers[id] ??= Object.keys(numbers).length + 1;
+      return `<button type="button" class="cite chat-cite" data-src="${escapeHtml(id)}" aria-label="Source ${numbers[id]}: ${escapeHtml(sources[id].title)}">[${numbers[id]}]</button>`;
+    };
+    const counts = { match: 0, partial: 0, gap: 0 };
+    const rows = (r.requirements || []).map((q) => {
+      counts[q.status] = (counts[q.status] || 0) + 1;
+      const [icon, label] = FIT_STATUS[q.status] || ["•", q.status];
+      return `<tr class="fit-${escapeHtml(q.status)}"><td class="fit-icon"><span role="img" aria-label="${label}">${icon}</span></td>
+        <td><strong>${escapeHtml(q.requirement)}</strong><span class="fit-evidence">${escapeHtml(q.evidence)} ${chip(q.source_id)}</span></td></tr>`;
+    }).join("");
+    const level = FIT_LABEL[r.overall_fit] ? r.overall_fit : "weak";
+    fitResult.innerHTML = `
+      <div class="fit-summary">
+        <div class="fit-title"><h3>${escapeHtml(r.role_title || "Role")}</h3><span class="fit-badge fit-${level}">${FIT_LABEL[level]}</span></div>
+        <p>${escapeHtml(r.summary || "")}</p>
+        <p class="fit-tally mono">✅ ${counts.match} match · ⚠️ ${counts.partial} partial · ❌ ${counts.gap} gap</p>
+      </div>
+      ${rows ? `<table class="fit-table"><thead><tr><th scope="col"><span class="sr-only">Status</span></th><th scope="col">Requirement and evidence</th></tr></thead><tbody>${rows}</tbody></table>` : ""}
+      ${(r.checks || []).length ? `<details class="fit-checks"><summary class="mono">${r.checks.length} adjustment${r.checks.length > 1 ? "s" : ""} by the evidence checker</summary><ul>${r.checks.map((c) => `<li>${escapeHtml(c)}</li>`).join("")}</ul></details>` : ""}`;
+    fitResult.querySelectorAll(".chat-cite").forEach((b) => bindCite(b, sources[b.dataset.src]));
+    fitPane.scrollTop = fitResult.offsetTop - 8; // scroll inside the panel only, never the page behind it
+  }
+
   /* ── Rendering ───────────────────────────────── */
   // Escape the model's text, then turn [source-id] into numbered chips. Ids that are not in
   // this answer's sources are dropped (fail closed). A half-streamed "[exper…" is hidden.
@@ -203,12 +302,19 @@
     btn.addEventListener("focus", show);
     btn.addEventListener("mouseleave", hidePopSoon);
     btn.addEventListener("blur", hidePopSoon);
-    btn.addEventListener("click", (e) => { e.stopPropagation(); pop.hidden ? show() : (pop.hidden = true); });
+    // A tap fires focus (which opens the popover) and then click: only close on a later, separate click.
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!pop.hidden && popAnchor === btn && Date.now() - popShownAt > 400) pop.hidden = true;
+      else show();
+    });
   }
 
-  let hideTimer;
+  let hideTimer, popAnchor = null, popShownAt = 0;
   function showPop(anchor, src) {
     clearTimeout(hideTimer);
+    if (pop.hidden || popAnchor !== anchor) popShownAt = Date.now();
+    popAnchor = anchor;
     pop.innerHTML = `<span class="mono">source · ${escapeHtml(src.id)}</span><strong>${escapeHtml(src.title)}</strong><br>${escapeHtml(truncate(src.text, 320))}`;
     pop.hidden = false;
     const r = anchor.getBoundingClientRect();
@@ -223,6 +329,7 @@
   pop.addEventListener("mouseleave", hidePopSoon);
   document.addEventListener("click", (e) => { if (!e.target.closest(".chat-cite, .chat-pop")) pop.hidden = true; });
   log.addEventListener("scroll", () => (pop.hidden = true));
+  fitPane.addEventListener("scroll", () => (pop.hidden = true));
 
   /* ── Helpers ─────────────────────────────────── */
   function addMsg(kind) {
