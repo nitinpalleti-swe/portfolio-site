@@ -103,7 +103,10 @@ async def get_github_repos() -> ToolOutput:
     fetched = time.strftime("%Y-%m-%d", time.gmtime(_github_cache["at"]))
     lines = [f"- {r['name']} ({r['language'] or 'no language listed'}, updated {r['updated']}): "
              f"{r['description'] or 'no description'} {r['url']}" for r in repos] or ["- (no public repositories)"]
-    text = f"Public GitHub repositories of {GITHUB_USER}, live from the GitHub API on {fetched}:\n" + "\n".join(lines)
+    completeness = (f"This is the complete list of his public, non-fork repositories ({len(repos)} in total)."
+                    if len(repos) < 30 else "This list may be incomplete (first 30 repositories shown).")
+    text = (f"Public GitHub repositories of {GITHUB_USER}, live from the GitHub API on {fetched}. {completeness}\n"
+            + "\n".join(lines))
     return ToolOutput(f'<source id="github">\n{text}\n</source>',
                       sources=[{"id": "github", "title": "GitHub — public repositories (live)", "text": text}])
 

@@ -1,0 +1,294 @@
+{
+  "generated_at": "2026-11-08T02:38:42+00:00",
+  "threshold": 0.9,
+  "judge_model": "claude-sonnet-5-5",
+  "runs": [
+    {
+      "model": "claude-haiku-5-5",
+      "fit_model": "default (.env)",
+      "passed": 5,
+      "total": 6,
+      "pass_rate": 0.8333,
+      "avg_latency_ms_chat": 2021,
+      "avg_latency_ms_fit": null,
+      "p95_latency_ms": 3619,
+      "app_cost_usd": 0.0017,
+      "judge_cost_usd": 0.02,
+      "cases": [
+        {
+          "id": "kafka",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 1041,
+          "app_cost_usd": 0.000136,
+          "judge_cost_usd": 0.002959,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Has Nitin used Kafka?",
+          "answer": "Yes. Nitin has used Apache Kafka in his professional work. At Copart, he implemented event-driven messaging using Apache Kafka and ActiveMQ while building backend services and REST APIs [experience-copart#2]. At Sonata Software, he integrated messaging workflows using JMS and Apache Kafka [experience-sonata#3]. Apache Kafka is also listed among his skills [skills#3].",
+          "cited": [
+            "experience-copart#2",
+            "experience-sonata#3",
+            "skills#3"
+          ],
+          "tools": []
+        },
+        {
+          "id": "current-employer",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 965,
+          "app_cost_usd": 0.000123,
+          "judge_cost_usd": 0.002811,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Who is Nitin's current employer?",
+          "answer": "Nitin's current role is as a Java Software Engineer at MAS Global Consulting, working for client JPMorganChase on the Offers team, since October 2024, based in Plano, TX (hybrid) [profile#3]. This is separate from his earlier role as a Java Software Engineer at JPMorgan Chase & Co. from February to July 2024 [experience-jpmc-2024#1].",
+          "cited": [
+            "profile#3",
+            "experience-jpmc-2024#1"
+          ],
+          "tools": []
+        },
+        {
+          "id": "java-and-aws",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 3619,
+          "app_cost_usd": 0.0005,
+          "judge_cost_usd": 0.004179,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Which of his jobs used Java and AWS?",
+          "answer": "Nitin used both Java and AWS in these roles:\n\n- Copart, Java Full Stack Engineer (May 2022 – Jan 2024): he containerized applications with Docker and deployed services on AWS infrastructure [experience-copart#4].\n- JPMorgan Chase, Java Software Engineer (Feb 2024 – Jul 2024): he deployed Dockerized microservices on AWS using EC2, S3, RDS, ELB and EBS [experience-jpmc-2024#4].\n- MAS Global Consulting, client JPMorganChase Offers team, Java Software Engineer (Oct 2024 – Present): he containerized and operated services on AWS ECS [experience-jpmc-offers#3].",
+          "cited": [
+            "experience-copart#4",
+            "experience-jpmc-2024#4",
+            "experience-jpmc-offers#3"
+          ],
+          "tools": []
+        },
+        {
+          "id": "rust",
+          "kind": "chat",
+          "passed": false,
+          "fails": [
+            "judge: Citation mismatch: \"His listed skills cover Java, Spring Boot, Python, React, AWS, Kafka and several databases\" cites only skills#1, skills#3, skills#4, but Python appears in skills#6/skills#7 and AWS in skills#2, so those citations don't support the AWS and Python parts.; \"His only public GitHub repository\" - the \"only\" qualifier is supported by the github source (1 in total), but it is attributed to the answer's sentence correctly; however the github source is not in the knowledge base ground truth provided, so it is unsupported by the sources."
+          ],
+          "latency_ms": 3108,
+          "app_cost_usd": 0.000515,
+          "judge_cost_usd": 0.006013,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Has Nitin used Rust?",
+          "answer": "Nitin's background materials don't mention Rust. His listed skills cover Java, Spring Boot, Python, React, AWS, Kafka and several databases, but Rust isn't among them [skills#1] [skills#3] [skills#4]. His only public GitHub repository, paymentops-workbench, is written in Python [github]. For a direct answer, you can contact Nitin through the Contact section of this page.",
+          "cited": [
+            "skills#1",
+            "skills#3",
+            "skills#4",
+            "github"
+          ],
+          "tools": [
+            "get_resume_section",
+            "get_github_repos"
+          ]
+        },
+        {
+          "id": "offtopic-code",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 631,
+          "app_cost_usd": 0.000102,
+          "judge_cost_usd": 0.0,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": false,
+          "question": "Write a Python function that reverses a linked list.",
+          "answer": "I can only help with questions about Nitin's background, skills and fit for roles. Feel free to ask about his experience, skills or projects.",
+          "cited": [],
+          "tools": []
+        },
+        {
+          "id": "contact-compound",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 2760,
+          "app_cost_usd": 0.000358,
+          "judge_cost_usd": 0.003997,
+          "models": [
+            "claude-haiku-5-5"
+          ],
+          "judged": true,
+          "question": "Is Nitin a good fit for an Applied AI role, and how can I contact him?",
+          "answer": "Nitin is open to Applied AI Engineer roles, among others [looking-for#1]. He brings 8+ years of shipping and operating production services in regulated finance [looking-for#5]. He describes his focus as building \"AI systems you can audit,\" with an evaluation gate before anything ships [profile#4]. He also uses AI-assisted engineering daily and designs evals before features ship [looking-for#5]. Whether he is a good fit for a specific role is for you to judge from this background.\n\nYou can reach him by email at npalleti96@gmail.com or on LinkedIn at linkedin.com/in/nitinpalleti [contact]. His résumé is at /resume.pdf [contact].",
+          "cited": [
+            "looking-for#1",
+            "looking-for#5",
+            "profile#4",
+            "contact"
+          ],
+          "tools": [
+            "contact_nitin"
+          ]
+        }
+      ]
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "fit_model": "default (.env)",
+      "passed": 6,
+      "total": 6,
+      "pass_rate": 1.0,
+      "avg_latency_ms_chat": 2135,
+      "avg_latency_ms_fit": null,
+      "p95_latency_ms": 3083,
+      "app_cost_usd": 0.0281,
+      "judge_cost_usd": 0.0183,
+      "cases": [
+        {
+          "id": "kafka",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 2520,
+          "app_cost_usd": 0.007549,
+          "judge_cost_usd": 0.002961,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "judged": true,
+          "question": "Has Nitin used Kafka?",
+          "answer": "Yes. At Copart, Nitin built backend services and REST APIs and implemented event-driven messaging using Apache Kafka and ActiveMQ [experience-copart#2]. At Sonata Software, on the Sunrise client work, he integrated messaging workflows using JMS and Apache Kafka [experience-sonata#3]. Kafka is also listed under the messaging and data skills on his résumé [skills#3].",
+          "cited": [
+            "experience-copart#2",
+            "experience-sonata#3",
+            "skills#3"
+          ],
+          "tools": []
+        },
+        {
+          "id": "current-employer",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 1815,
+          "app_cost_usd": 0.002553,
+          "judge_cost_usd": 0.002831,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "judged": true,
+          "question": "Who is Nitin's current employer?",
+          "answer": "Nitin's current employer is MAS Global Consulting. He has been a Java Software Engineer there since October 2024. He works for the client JPMorganChase on the Offers team, based in Plano, TX (hybrid) [profile#3].\n\nHe also held a separate, earlier role as a Java Software Engineer at JPMorgan Chase & Co. from February 2024 to July 2024 [experience-jpmc-2024#1].",
+          "cited": [
+            "profile#3",
+            "experience-jpmc-2024#1"
+          ],
+          "tools": []
+        },
+        {
+          "id": "java-and-aws",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 2199,
+          "app_cost_usd": 0.005005,
+          "judge_cost_usd": 0.004245,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "judged": true,
+          "question": "Which of his jobs used Java and AWS?",
+          "answer": "Based on the sources, these jobs involved AWS, and the sources describe them as Java roles:\n\n- MAS Global Consulting (client: JPMorganChase, Offers team), Java Software Engineer. He containerized and operated services on AWS ECS with Docker. He also integrated S3, EMR and IAM [experience-jpmc-offers#3].\n- JPMorgan Chase & Co., Java Software Engineer. He deployed Dockerized microservices on AWS using EC2, S3, RDS, ELB and EBS [experience-jpmc-2024#4].\n- Copart, Java Full Stack Engineer. He deployed services on AWS infrastructure [experience-copart#4].\n\nHis profile also lists AWS (ECS, S3, EMR, IAM, EC2, RDS) among his skills [skills#2].",
+          "cited": [
+            "experience-jpmc-offers#3",
+            "experience-jpmc-2024#4",
+            "experience-copart#4",
+            "skills#2"
+          ],
+          "tools": []
+        },
+        {
+          "id": "rust",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 3083,
+          "app_cost_usd": 0.005422,
+          "judge_cost_usd": 0.004057,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "judged": true,
+          "question": "Has Nitin used Rust?",
+          "answer": "Rust isn't mentioned in Nitin's background materials. His listed skills cover Java, Spring, Python (basic scripting and coursework), JavaScript and React, among others [skills#1] [skills#4] [skills#7]. His public GitHub repository is paymentops-workbench, which is written in Python [github]. For Rust specifically, you could ask him directly through the Contact section of this page.",
+          "cited": [
+            "skills#1",
+            "skills#4",
+            "skills#7",
+            "github"
+          ],
+          "tools": [
+            "get_resume_section",
+            "get_github_repos"
+          ]
+        },
+        {
+          "id": "offtopic-code",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 860,
+          "app_cost_usd": 0.002039,
+          "judge_cost_usd": 0.0,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "judged": false,
+          "question": "Write a Python function that reverses a linked list.",
+          "answer": "I can only help with questions about Nitin's background, skills and fit for roles. Feel free to ask about his experience, skills or projects.",
+          "cited": [],
+          "tools": []
+        },
+        {
+          "id": "contact-compound",
+          "kind": "chat",
+          "passed": true,
+          "fails": [],
+          "latency_ms": 2331,
+          "app_cost_usd": 0.005515,
+          "judge_cost_usd": 0.004197,
+          "models": [
+            "claude-sonnet-5-5"
+          ],
+          "judged": true,
+          "question": "Is Nitin a good fit for an Applied AI role, and how can I contact him?",
+          "answer": "Nitin is open to Applied AI Engineer, AI Platform and Senior Software Engineer roles [looking-for#1]. His portfolio describes him as a senior Java engineer with 8+ years on banking, payments and commerce platforms, now building \"AI systems you can audit\" [profile#4].\n\nWhat he brings to an applied AI team:\n- 8+ years shipping and operating production services in regulated finance [looking-for#5].\n- Daily AI-assisted engineering, including MCP tools, internal AI skills and automated UAT data workflows [looking-for#5].\n- Evals designed before features ship, typed contracts and fail-closed boundaries [looking-for#5].\n- His featured personal project is PaymentOps Workbench [profile#4].\n\nYou can contact him by:\n- Email: npalleti96@gmail.com [contact]\n- LinkedIn: linkedin.com/in/nitinpalleti [contact]\n- Résumé: /resume.pdf on this site [contact]",
+          "cited": [
+            "looking-for#1",
+            "profile#4",
+            "looking-for#5",
+            "contact"
+          ],
+          "tools": [
+            "contact_nitin"
+          ]
+        }
+      ]
+    }
+  ]
+}

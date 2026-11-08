@@ -20,6 +20,7 @@ def check(requirement: str, source_id: str, status: str = "match", jd: str = "jo
     ("Strong Java or Python and REST microservices", "skills#1", "match"),
     ("Java or Python", "skills#1", "match"),
     ("Java or Python", "skills#7", "match"),        # skills#7 states "his primary language is Java"
+    ("Strong Java or Python and REST microservices", "experience-jpmc-2024#3", "match"),  # "Java" is in the section title
     ("Python required", "skills#7", "partial"),     # Python only → capped
     ("Python/Go backend services", "skills#1", "partial"),  # the alternative (Go) isn't supported → capped
     ("Machine learning or deep learning frameworks", "skills#6", "partial"),  # every option is ML → capped

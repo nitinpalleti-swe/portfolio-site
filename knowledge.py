@@ -59,8 +59,9 @@ STOP_WORDS = set(
 def tokenize(text: str) -> list[str]:
     words = re.findall(r"[a-z0-9]+", text.lower())  # "Master's" -> ["master", "s"]
     words = [w for w in words if len(w) > 1 and w not in STOP_WORDS]
-    # Crude plural folding so "masters" matches "master": strip one trailing "s" from words longer than 3 letters.
-    return [w[:-1] if len(w) > 3 and w.endswith("s") else w for w in words]
+    # Crude stemming so related forms meet: "masters" -> "master", "monitors"/"monitoring" -> "monitor".
+    words = [w[:-1] if len(w) > 3 and w.endswith("s") else w for w in words]
+    return [w[:-3] if len(w) > 6 and w.endswith("ing") else w for w in words]
 
 
 CHUNKS = load_chunks()

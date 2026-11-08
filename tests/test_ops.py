@@ -17,7 +17,9 @@ def test_cost_uses_per_model_prices():
 
 
 def test_unknown_model_priced_as_most_expensive():
-    assert ops.cost_usd([{**HAIKU, "model": "some-new-model"}]) == pytest.approx(2.00 + 10.00 + 0.20)
+    top = max(ops.PRICES.values(), key=lambda p: p["output"])
+    assert ops.cost_usd([{**HAIKU, "model": "some-new-model"}]) == pytest.approx(top["input"] + top["output"] + top["cache_read"])
+    assert top["output"] >= 10.00
 
 
 def test_visitor_hash_is_keyed_and_stable():
@@ -85,3 +87,33 @@ def test_log_never_needs_raw_ip_or_jd_text(tmp_path):
     line = log.read_text()
     assert "203.0.113.7" not in line and "job description text" not in line
     assert rec["jd_len"] == 1234
+
+
+def test_spend_sees_lines_written_by_another_process(tmp_path, monkeypatch):
+    log = tmp_path / "requests.jsonl"
+    monkeypatch.setattr(ops, "LOG_PATH", log)
+    monkeypatch.setattr(ops, "_spend", {"day": None, "size": -1, "public": 0.0, "eval": 0.0})
+    assert ops.spent_today() == 0.0
+    now = datetime.now(timezone.utc).isoformat()
+    # another process (e.g. a second worker) appends a public line directly
+    log.write_text(json.dumps({"ts": now, "endpoint": "chat", "status": "ok", "ip": "x", "latency_ms": 1, "cost_usd": 0.25}) + "\n")
+    assert ops.spent_today() == pytest.approx(0.25)
+
+
+def test_eval_spend_has_its_own_budget(tmp_path, monkeypatch):
+    log = tmp_path / "requests.jsonl"
+    monkeypatch.setattr(ops, "LOG_PATH", log)
+    monkeypatch.setattr(ops, "_spend", {"day": None, "size": -1, "public": 0.0, "eval": 0.0})
+    monkeypatch.setattr(ops, "DAILY_SPEND_CAP_USD", 0.50)
+    monkeypatch.setattr(ops, "EVAL_DAILY_CAP_USD", 1.00)
+    ops.log_request({"endpoint": "eval", "eval_of": "judge", "status": "ok", "ip": "local", "latency_ms": 1},
+                    [{"model": "claude-sonnet-5-5", "input": 100_000, "output": 0, "cache_write": 0, "cache_read": 0}])  # $0.20
+    ops.log_request({"endpoint": "chat", "status": "ok", "ip": "v", "latency_ms": 1},
+                    [{"model": "claude-haiku-5-5", "input": 1_000_000, "output": 0, "cache_write": 0, "cache_read": 0}])  # $0.10
+    # eval spend doesn't count toward the public cap, and vice versa
+    assert ops.spent_today("public") == pytest.approx(0.10)
+    assert ops.spent_today("eval") == pytest.approx(0.20)
+    for _ in range(5):  # push eval spend to $1.20: eval capped, public still open
+        ops.log_request({"endpoint": "eval", "status": "ok", "ip": "local", "latency_ms": 1},
+                        [{"model": "claude-sonnet-5-5", "input": 100_000, "output": 0, "cache_write": 0, "cache_read": 0}])
+    assert ops.over_eval_cap() and not ops.over_daily_cap()

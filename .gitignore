@@ -19,3 +19,6 @@ PROMPTS-ask-nitin.md
 .claude/settings.local.json
 .idea/
 WORKER-REPORT.md
+
+# partial eval runs (--only) are scratch output
+evals/*-partial.json
