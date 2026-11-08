@@ -4,7 +4,13 @@
     {
       "name": "ask-nitin",
       "runtimeExecutable": ".venv/bin/uvicorn",
-      "runtimeArgs": ["app:app", "--reload", "--port", "8000"],
+      "runtimeArgs": [
+        "app:app",
+        "--reload",
+        "--port",
+        "8000",
+        "--no-proxy-headers"
+      ],
       "port": 8000
     }
   ]

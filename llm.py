@@ -22,7 +22,9 @@ LLM_PROVIDER = os.getenv("LLM_PROVIDER", "anthropic")
 # provider can be added here without touching the chat loop below.
 
 class ModelRefusal(Exception):
-    pass
+    def __init__(self, usage: dict | None = None):
+        super().__init__("model declined")
+        self.usage = usage or {}  # a declined call can still cost tokens
 
 
 @dataclass
@@ -30,6 +32,12 @@ class ModelTurn:
     stop_reason: str            # "end_turn", "tool_use", "max_tokens", ...
     tool_calls: list[dict]      # [{"id", "name", "input"}]
     assistant_message: dict     # append to messages as-is (keeps thinking/tool blocks unchanged)
+    usage: dict                 # {"model", "input", "output", "cache_write", "cache_read"} for cost tracking
+
+
+def _usage(model: str, u) -> dict:
+    return {"model": model, "input": u.input_tokens or 0, "output": u.output_tokens or 0,
+            "cache_write": u.cache_creation_input_tokens or 0, "cache_read": u.cache_read_input_tokens or 0}
 
 
 _client = None
@@ -58,25 +66,27 @@ async def stream_model(model: str, system: str, messages: list[dict], tools: lis
             async for text in stream.text_stream:
                 yield "text", text
             final = await stream.get_final_message()
+        usage = _usage(final.model, final.usage)
         if final.stop_reason == "refusal":
-            raise ModelRefusal()
+            raise ModelRefusal(usage)
         u = final.usage
         calls = [{"id": b.id, "name": b.name, "input": b.input} for b in final.content if b.type == "tool_use"]
         print(f"[llm] {model} in={u.input_tokens} out={u.output_tokens} cache_write={u.cache_creation_input_tokens} "
               f"cache_read={u.cache_read_input_tokens} stop={final.stop_reason} tools={[c['name'] for c in calls]}")
-        yield "turn", ModelTurn(final.stop_reason, calls, {"role": "assistant", "content": final.content})
+        yield "turn", ModelTurn(final.stop_reason, calls, {"role": "assistant", "content": final.content}, usage)
     else:
         raise RuntimeError(f"LLM_PROVIDER={LLM_PROVIDER!r} is not implemented yet")
 
 
-async def structured_model(model: str, system: str, user: str, schema: type[BaseModel], max_tokens: int = 16000) -> BaseModel:
-    """One non-streaming call whose reply is validated against a Pydantic schema (structured output)."""
+async def structured_model(model: str, system: str, user: str, schema: type[BaseModel],
+                           max_tokens: int = 16000) -> tuple[BaseModel, dict]:
+    """One non-streaming call whose reply is validated against a Pydantic schema. Returns (parsed, usage)."""
     global _client
     if LLM_PROVIDER == "anthropic":
         import anthropic
 
         _client = _client or anthropic.AsyncAnthropic(timeout=20.0, max_retries=1)
-        resp = await _client.with_options(timeout=90.0).beta.messages.parse(
+        resp = await _client.with_options(timeout=20.0, max_retries=0).beta.messages.parse(
             model=model,
             max_tokens=max_tokens,  # includes adaptive-thinking tokens
             output_config={"effort": "medium"},
@@ -90,9 +100,10 @@ async def structured_model(model: str, system: str, user: str, schema: type[Base
         u = resp.usage
         print(f"[llm] {resp.model} in={u.input_tokens} out={u.output_tokens} cache_write={u.cache_creation_input_tokens} "
               f"cache_read={u.cache_read_input_tokens} stop={resp.stop_reason}")
+        usage = _usage(resp.model, u)
         if resp.stop_reason == "refusal" or resp.parsed_output is None:
-            raise ModelRefusal()
-        return resp.parsed_output
+            raise ModelRefusal(usage)
+        return resp.parsed_output, usage
     raise RuntimeError(f"LLM_PROVIDER={LLM_PROVIDER!r} is not implemented yet")
 
 

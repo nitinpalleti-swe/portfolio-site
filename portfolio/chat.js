@@ -48,14 +48,14 @@
       <textarea id="chatInput" rows="1" maxlength="1000" placeholder="Ask a question…" required></textarea>
       <button class="chat-send" type="submit">Send</button>
     </form>
-    <p class="chat-foot mono">AI-generated from cited sources. Verify anything important with Nitin.</p>`);
+    <p class="chat-foot mono">AI-generated from cited sources. Verify anything important with Nitin. Questions are logged to improve answers.</p>`);
   const pop = el("div", { class: "pop chat-pop", role: "tooltip", hidden: "" });
   document.body.append(fab, panel, pop);
 
   const log = panel.querySelector(".chat-log");
   const form = panel.querySelector(".chat-form");
-  const input = panel.querySelector("textarea");
-  const send = panel.querySelector(".chat-send");
+  const input = panel.querySelector("#chatInput"); // explicit: the fit tab has its own textarea and button
+  const send = form.querySelector(".chat-send");
 
   // Intro + suggested questions
   const intro = el("div", { class: "chat-suggest" });
@@ -138,6 +138,11 @@
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
+        if (body.limited || body.capped) {  // hourly limit or daily budget: a friendly notice, not an error
+          bubble.textContent = body.error;
+          renderExtras(bubble, [], body.contact);
+          return;
+        }
         throw new Error(typeof body.error === "string" ? body.error : "Something went wrong. Please try again.");
       }
       await readEvents(res, (ev) => {
@@ -216,6 +221,14 @@
         body: JSON.stringify({ job_description: jd }),
       });
       const body = await res.json().catch(() => ({}));
+      if (!res.ok && (body.limited || body.capped)) {
+        const note = el("div", { class: "chat-msg bot" });
+        note.textContent = body.error;
+        renderExtras(note, [], body.contact);
+        fitResult.innerHTML = "";
+        fitResult.append(note);
+        return;
+      }
       if (!res.ok) throw new Error(typeof body.error === "string" ? body.error : "Something went wrong. Please try again.");
       renderFit(body);
     } catch (err) {
