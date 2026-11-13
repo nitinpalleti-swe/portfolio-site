@@ -17,7 +17,9 @@ const CITES = {
   2: { src: "docs/CONTRACTS.md", text: "FastAPI validates request and response source IDs; malformed output, deadlines and rate limits become explicit review-required states.", href: `${REPO}/blob/main/docs/CONTRACTS.md` },
   3: { src: "evals/README.md", text: "Versioned development (30), held-out (20) and adversarial (10) fixtures, with a release-evaluation provenance block.", href: `${REPO}/tree/main/evals` },
   4: { src: "README.md → Approval workflow", text: "Versioned synthetic review drafts, optimistic concurrency, and one durable approval audit event.", href: `${REPO}#what-is-built` },
-  6: { src: "résumé → JPMorganChase, Oct 2024 – present", text: "Production deployments on AWS ECS, Datadog monitoring and incident triage; internal AI skills, MCP tools and Copilot used under review and quality controls.", href: "resume.pdf" },
+  6: { src: "résumé → MAS Global Consulting (client: JPMorganChase), Oct 2024 – present", text: "Production deployments on AWS ECS, Datadog monitoring and incident triage; internal AI skills, MCP tools and Copilot used under review and quality controls.", href: "resume.pdf" },
+  7: { src: "Agentic Compass case study", text: "Human-supervised AI agent for GitHub Copilot: every remote write approved by a human, least-privilege skill routing, append-only audit log; senior-lead reviews → UAT → production.", href: "agentic-compass.html" },
+  8: { src: "portfolio-site → evals", text: "Ask Nitin's eval suite: factual, negative, off-topic, injection, leak and job-fit cases, graded by rules plus an LLM judge, with a 90% deploy gate and a separate held-out set.", href: "https://github.com/nitinpalleti-swe/portfolio-site#readme" },
   5: { src: "README.md → Known limitations", text: "Bedrock, public demo and held-out evaluation remain unverified and are documented as blocked on explicit gates.", href: `${REPO}#known-limitations` },
 };
 const pop = document.getElementById("pop");
@@ -70,7 +72,7 @@ function selectNode(key) {
   detail.innerHTML = `<span class="mono small muted">component</span><h4>${a.t}</h4><ul>${a.d.map((x) => `<li>${x}</li>`).join("")}</ul>`;
 }
 document.querySelectorAll(".node").forEach((n) => n.addEventListener("click", () => selectNode(n.dataset.node)));
-selectNode("ui");
+if (detail) selectNode("ui");
 
 /* ── Mini eval gate ──────────────────────────── */
 const CASES = [
@@ -83,8 +85,8 @@ const CASES = [
 ];
 const casesEl = document.getElementById("gateCases");
 const resultEl = document.getElementById("gateResult");
-casesEl.insertAdjacentHTML("beforebegin", `<p class="gate-q">Case <code>CASE-003</code> · evidence: <code>EVT-7</code> <code>EVT-8</code> <code>POL-DUPLICATE@1</code></p>`);
-CASES.forEach((c, i) => {
+if (casesEl) casesEl.insertAdjacentHTML("beforebegin", `<p class="gate-q">Case <code>CASE-003</code> · evidence: <code>EVT-7</code> <code>EVT-8</code> <code>POL-DUPLICATE@1</code></p>`);
+if (casesEl) CASES.forEach((c, i) => {
   const b = document.createElement("button");
   b.className = "case";
   b.innerHTML = `<span class="mono">${c.label}</span>${c.text}`;

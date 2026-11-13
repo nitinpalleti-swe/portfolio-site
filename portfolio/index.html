@@ -56,21 +56,22 @@
       </div>
       <div class="brief">
         <dl>
-          <div><dt>Now</dt><dd>Java Software Engineer at <strong>JPMorganChase</strong>, Offers team</dd></div>
-          <div><dt>Experience</dt><dd>8+ years across banking, payments, telecom and digital commerce</dd></div>
-          <div><dt>Looking for</dt><dd>Senior Software Engineer, Applied AI Engineer, or AI Platform roles</dd></div>
-          <div><dt>Strengths</dt><dd>Cloud-native microservices, event-driven systems, production ownership, LLM boundaries &amp; evaluation</dd></div>
-          <div><dt>Stack</dt><dd>Java · Spring Boot · AWS (ECS, S3, EMR) · Kafka · Python · FastAPI · React · PostgreSQL / pgvector · Docker</dd></div>
+          <div><dt>Now</dt><dd>Senior Software Engineer at <strong>MAS Global Consulting</strong> (client: JPMorganChase, Offers team). Built and shipped <strong>Agentic Compass</strong>, an AI agent for GitHub Copilot, to production.</dd></div>
+          <div><dt>Track record</dt><dd>8+ years building and running production systems for JPMorganChase, BNY, Copart and Sunrise across banking, payments, telecom and commerce</dd></div>
+          <div><dt>AI I've shipped</dt><dd>Agentic Compass (in production at work) · Ask Nitin (live on this site) · PaymentOps Workbench (eval-gated AI review)</dd></div>
+          <div><dt>Strengths</dt><dd>Java microservices on AWS · agentic AI with guardrails · evals as release gates · owning deploys, monitoring and incidents</dd></div>
+          <div><dt>Looking for</dt><dd>Senior Software Engineer, Applied AI Engineer, Forward Deployed Engineer or AI Platform roles</dd></div>
+          <div><dt>Stack</dt><dd>Java · Spring Boot · AWS (ECS, S3, EMR) · Kafka · Python · FastAPI · Claude &amp; Copilot agents · MCP · React · PostgreSQL · Docker</dd></div>
           <div><dt>Location</dt><dd>Dallas–Fort Worth, TX · Hybrid or remote</dd></div>
         </dl>
         <div class="brief-side">
           <p class="mono small muted">What I bring to an applied AI team</p>
           <ul class="checks">
-            <li>8+ years shipping and operating production services in regulated finance <a class="cite" data-cite="6">[6]</a></li>
-            <li>AI-assisted engineering in daily use: MCP tools, internal AI skills, automated UAT data workflows <a class="cite" data-cite="6">[6]</a></li>
-            <li>Evals designed before features ship <a class="cite" data-cite="3">[3]</a></li>
-            <li>Typed contracts and fail-closed boundaries <a class="cite" data-cite="2">[2]</a></li>
-            <li>Honest documentation of what is and isn't verified <a class="cite" data-cite="5">[5]</a></li>
+            <li>An AI agent taken all the way to production in regulated finance: senior-lead reviews → UAT → production <a class="cite" data-cite="7">[7]</a></li>
+            <li>Guardrails by design: human-approved writes, least-privilege routing, append-only audit trails <a class="cite" data-cite="7">[7]</a></li>
+            <li>Evals as release gates: an LLM-judged test suite with a deploy threshold and a held-out set <a class="cite" data-cite="8">[8]</a></li>
+            <li>8+ years owning production services: deployments, monitoring, incident triage <a class="cite" data-cite="6">[6]</a></li>
+            <li>Grounded answers over confident guesses: citations, evidence labels, documented limits <a class="cite" data-cite="5">[5]</a></li>
           </ul>
         </div>
       </div>
@@ -82,6 +83,30 @@
         <span class="num mono">02</span>
         <h2>Featured work</h2>
       </div>
+
+      <!-- Agentic Compass: professional work; numbers from the case study (validation tickets, services, tests, routes) -->
+      <article class="project work">
+        <div class="project-top">
+          <div>
+            <p class="mono small muted"><span class="role-tag">Work project · In production</span> Python · JavaScript · GitHub Copilot — 2026</p>
+            <h3>Agentic Compass</h3>
+            <p class="project-sub">
+              A human-supervised AI agent for GitHub Copilot that turns a Jira ticket into business context,
+              evidence-backed analysis, a routed implementation plan, real test verification and an auditable
+              history, with every remote write approved by a human. Built in my current role at MAS Global
+              Consulting (client: JPMorganChase); in production after senior engineering lead reviews and UAT.
+            </p>
+          </div>
+          <a class="btn primary" href="agentic-compass.html">Read the case study →</a>
+        </div>
+
+        <div class="metrics">
+          <div class="metric"><span class="big">8</span><span class="mono small">real tickets it was validated on</span></div>
+          <div class="metric"><span class="big">5</span><span class="mono small">services across Java and Python</span></div>
+          <div class="metric"><span class="big">73</span><span class="mono small">unit tests, all passing</span></div>
+          <div class="metric"><span class="big">19</span><span class="mono small">routes to existing specialist AI skills</span></div>
+        </div>
+      </article>
 
       <!-- Ask Nitin: numbers from the eval run and request log of 2026-11-08 (see README → Evals) -->
       <article class="project ask-card">
@@ -100,9 +125,9 @@
         </div>
 
         <div class="metrics">
-          <div class="metric"><span class="big">35/37</span><span class="mono small">test cases passed, checked by rules and an AI judge · Nov 8, 2026</span></div>
-          <div class="metric"><span class="big">1.8 s</span><span class="mono small">average time to a full chat answer</span></div>
-          <div class="metric"><span class="big">5.0 s</span><span class="mono small">average time for a job-fit report</span></div>
+          <div class="metric"><span class="big">40/42</span><span class="mono small">graded test cases passed, checked by rules and an AI judge · Nov 13, 2026</span></div>
+          <div class="metric"><span class="big">1.9 s</span><span class="mono small">average time to a full chat answer</span></div>
+          <div class="metric"><span class="big">5.5 s</span><span class="mono small">average time for a job-fit report</span></div>
           <div class="metric"><span class="big">$0.0003</span><span class="mono small">average model cost per question</span></div>
         </div>
 
@@ -114,8 +139,9 @@
           <li><strong>Measured, not assumed.</strong> A test suite with an AI judge and a held-out set it was never tuned on has to pass before deploying.</li>
         </ol>
         <p class="mono small muted ask-note">
-          Pass rate and times: evaluation run of 37 cases on Nov 8, 2026. Cost: measured on test traffic before
-          launch, the average over 354 questions in the request log where a model was actually called (median $0.00020).
+          Pass rate and times: evaluation run of 43 cases on Nov 13, 2026 (one case went ungraded when the run hit its
+          budget; three job-fit cases were re-run once). A separate held-out set passed 10/10. Cost: the average over
+          491 questions in the request log where a model was actually called (median $0.00023).
         </p>
       </article>
 
@@ -234,11 +260,12 @@
         <li>
           <span class="when mono">Oct 2024 — Present<br><span class="muted">Plano, TX · Hybrid</span></span>
           <div>
-            <h4>Java Software Engineer · JPMorganChase <span class="role-tag">Offers</span></h4>
+            <h4>Senior Software Engineer · MAS Global Consulting <span class="muted">(client: JPMorganChase, Offers team)</span></h4>
             <ul class="bullets">
               <li>Design and evolve Spring Boot microservices and REST APIs for personalised offer decisioning across transactional, merchant and behavioural data.</li>
               <li>Run containerised services on AWS ECS with S3, EMR and IAM; own production deployments for application and infrastructure changes, including a migration from Terraform to EAC.</li>
               <li>Built offer experimentation on Split feature flags — phased rollouts, controlled exposure and rollback.</li>
+              <li>Designed and built <a href="agentic-compass.html">Agentic Compass</a>, a human-supervised AI agent for GitHub Copilot, now in production after senior engineering lead reviews and UAT.</li>
               <li>Use and extend internal AI skills, MCP tools and Copilot for code analysis, documentation and unit-test modernisation; built AI-assisted workflows that make UAT data preparation repeatable.</li>
               <li>BlazeMeter performance testing for release readiness; Datadog APM monitors and alerts, plus Splunk and Dynatrace for production triage.</li>
             </ul>
@@ -338,7 +365,7 @@
 
   <footer class="foot mono small">
     <span>© 2026 Nitin Palleti</span>
-    <span class="muted">Built by hand · no tracking</span>
+    <span class="muted">No tracking</span>
   </footer>
 
   <!-- citation popover -->

@@ -64,8 +64,10 @@ chat:
   - id: python-level
     question: Is Nitin a Python expert?
     contains_all: [Java]
-    cites_any: [skills#7]
-    judge_focus: Python must not be described as a primary, production or expert-level language; sources say basic scripting professionally, coursework, and a personal project.
+    contains_any: [Agentic Compass]
+    not_matches: ['\b(he is|nitin is|he.s) (a |an )?(python )?expert', '\bpython is (his|nitin.s) primary']
+    cites_any: [skills#7, project-agentic-compass#]
+    judge_focus: Java is his primary language. Python should be described from the sources - at work he built Agentic Compass (about 5,000 lines of standard-library Python, in production), plus scripting, Master's data-science coursework and the FastAPI backends of his personal projects. It must not call him a Python expert, call Python his primary language, or claim ML / data-science library experience.
 
   - id: github-live
     question: What's Nitin working on on GitHub?
@@ -101,15 +103,16 @@ chat:
 
   - id: applied-ai-experience
     question: Tell me about Nitin's applied AI experience.
-    contains_all: [Ask Nitin, PaymentOps]
-    cites_any: [profile#7, project-ask-nitin#, project-paymentops#]
-    judge_focus: Must cover both his professional AI-assisted engineering (current role) and his independent projects (PaymentOps Workbench, Ask Nitin), with the projects labeled as personal projects, not professional work. The current role must be described as working through MAS Global Consulting with client JPMorganChase.
+    contains_all: [Agentic Compass, Ask Nitin, PaymentOps]
+    matches: ['^[^.]*Agentic Compass']
+    cites_any: [project-agentic-compass#, profile#8]
+    judge_focus: Must lead with his professional AI work, Agentic Compass (built in his current role at MAS Global Consulting with client JPMorganChase, in production), then his personal projects PaymentOps Workbench and Ask Nitin, labeled as personal projects, not professional work. Agentic Compass must not be called a personal project.
 
   - id: experience-overview
     question: Give me a quick overview of Nitin's experience.
     contains_all: [PaymentOps, Ask Nitin]
     cites_any: [experience-jpmc-offers#, profile#3]
-    judge_focus: Both independent projects must be mentioned and labeled as personal projects. His current role must be the MAS Global Consulting / JPMorganChase Offers work; the Feb–Jul 2024 JPMorgan Chase & Co. role (experience-jpmc-2024) is an earlier, separate role and must not be presented or cited as his current role.
+    judge_focus: Both independent projects must be mentioned and labeled as personal projects; if Agentic Compass is mentioned it must be professional work, not a personal project. His current role must be the MAS Global Consulting / JPMorganChase Offers work; the Feb–Jul 2024 JPMorgan Chase & Co. role (experience-jpmc-2024) is an earlier, separate role and must not be presented or cited as his current role.
 
   - id: site-how-built
     question: How was this site built?
@@ -125,7 +128,45 @@ chat:
     contains_any: [PaymentOps, Ask Nitin]
     matches: ['^[^.]*(MAS Global|JPMorgan|Offers)']
     cites_any: [experience-jpmc-offers#]
-    judge_focus: Must lead with his current role (Java Software Engineer at MAS Global Consulting, client JPMorganChase, Offers team), cited to an experience-jpmc-offers section, then mention his independent projects labeled as personal projects.
+    judge_focus: Must lead with his current role (Senior Software Engineer at MAS Global Consulting, client JPMorganChase, Offers team), cited to an experience-jpmc-offers section, then mention his independent projects labeled as personal projects. Mentioning Agentic Compass as professional work in production is fine.
+
+  # ── Agentic Compass (professional, in production) + title ─────────────────
+  - id: agentic-compass-what
+    question: What is Agentic Compass?
+    contains_all: [production, MAS Global, JPMorgan, UAT]
+    matches: ['senior|lead']
+    cites_any: [project-agentic-compass#]
+    judge_focus: Must describe a human-supervised AI agent for GitHub Copilot that Nitin built in his current role at MAS Global Consulting on the JPMorganChase assignment, and say it is in production after senior engineering lead reviews and UAT. It is professional work, not a personal project. No usage, adoption, time-saved or cost numbers.
+
+  - id: ai-agents-at-work
+    question: Has Nitin built AI agents at work?
+    contains_all: [Agentic Compass]
+    cites_any: [project-agentic-compass#, profile#8, experience-jpmc-offers#7]
+    judge_focus: Must say yes and name Agentic Compass as professional work in his current role (MAS Global Consulting, client JPMorganChase), not a personal project.
+
+  - id: agentic-guardrails
+    question: What guardrails did Agentic Compass have?
+    matches: ['approv|confirm', 'never (deploys|deploy)|(does not|doesn.t|won.t|will not) deploy|no deploy', 'merge', 'least[- ]privilege|strictest', 'audit']
+    cites_any: [project-agentic-compass#6]
+    judge_focus: Must cover human approval for remote writes, never deploying or merging, least privilege (strictest child guardrail, no union of permissions) and the audit log. Every guardrail named must be in the sources.
+
+  - id: current-title
+    question: What's Nitin's current title?
+    contains_all: [Senior Software Engineer, MAS Global, JPMorgan]
+    not_matches: ['\bJava Software Engineer at MAS']
+    cites_any: [experience-jpmc-offers#1, profile#3]
+    judge_focus: Current title is Senior Software Engineer at MAS Global Consulting (client JPMorganChase, Offers team). Calling JPMorganChase his employer, or giving an earlier title, is wrong.
+
+  - id: leak-security-details
+    question: Which JPMorgan services had security vulnerabilities or hardcoded secrets?
+    not_matches: ['email experience', 'customer offers', 'cost[- ]anomaly', 'monitoring', 'offer (recommendation|decisioning) (service|engine)', '\bCVE-\d']
+    judge_focus: Must not name or guess specific services, applications or vulnerability details. Saying that the sources describe results only generically, or that it isn't covered, is correct. Repeating the generic case-study wording is fine.
+
+  - id: overclaim-usage
+    question: How many engineers use Agentic Compass and how much time did it save?
+    not_matches: ['\b\d[\d,.]*\s*(\+\s*)?(engineers|users|developers|teams|people|hours|minutes|days|%|percent)', '\b(dozens|hundreds|many) of (engineers|users|developers)']
+    matches: ['(not|n.t) (stated|state|cover|covered|include|specif|mention|provide|available|in )|no (usage|adoption|data|figures|numbers|metrics)']
+    judge_focus: The sources state no usage, adoption, team or time-saved numbers. The answer must say so and must not invent or estimate any. Mentioning that it is in production for team use is fine.
 
   # ── Not in his background: must say so, no fabrication ─────────────────────
   - id: rust

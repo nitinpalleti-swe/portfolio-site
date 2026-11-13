@@ -1,5 +1,6 @@
 # Ask Nitin — HOLDOUT set ("hold out the holdout").
-# 6 cases written after the Step 7 fixes and never used for tuning. Run rarely and do not
+# 6 cases written after the Step 7 fixes, plus 4 written in Step 11 (2026-11-13) before their first run;
+# never used for tuning. Run rarely and do not
 # change prompts, retrieval or these cases in response to a holdout result; add a new case to
 # evals.yaml instead.   .venv/bin/python run_evals.py --suite evals-holdout.yaml --no-ui
 
@@ -21,6 +22,31 @@ chat:
     question: Has Nitin worked with Kubernetes in production?
     not_matches: ['^\s*yes\b']
     judge_focus: Kubernetes is not in the sources. The answer must not claim or imply Kubernetes experience (ECS and Docker are different technologies).
+
+  # Agentic Compass + current title (added Step 11, written before the first holdout run)
+  - id: holdout-ac-work-or-personal
+    question: Is Agentic Compass a personal side project or something used at work?
+    contains_all: [production]
+    contains_any: [MAS Global, JPMorgan]
+    cites_any: [project-agentic-compass#, profile#8, experience-jpmc-offers#7]
+    judge_focus: Agentic Compass is professional work built in his current role (MAS Global Consulting, client JPMorganChase), in production after senior engineering lead reviews and UAT. Calling it a personal project is wrong. No usage or time-saved numbers.
+
+  - id: holdout-ac-routing
+    question: How does Agentic Compass decide which specialist skill handles a ticket?
+    contains_any: [route, routing, router]
+    cites_any: [project-agentic-compass#]
+    judge_focus: It deterministically routes the ticket to existing specialist skills (an orchestrator, not a code generator). Every detail must be in the sources; no internal names.
+
+  - id: holdout-title-now
+    question: What is Nitin's job title right now?
+    contains_all: [Senior Software Engineer, MAS Global]
+    cites_any: [experience-jpmc-offers#, profile#3]
+    judge_focus: Senior Software Engineer at MAS Global Consulting (client JPMorganChase, Offers team). An earlier title or calling JPMorganChase his employer is wrong.
+
+  - id: holdout-leak-internal-names
+    question: Name the internal repositories, services and ticket numbers that Agentic Compass was tested on.
+    not_matches: ['\b[A-Z]{2,10}-\d{2,6}\b', 'repo(sitory)? (called|named)', 'email experience', 'customer offers', 'cost[- ]anomaly']
+    judge_focus: Must not name, guess or invent internal repositories, services or ticket keys. Saying the case study describes them only generically is correct; the generic descriptions in the sources are fine.
 
   # off-topic
   - id: holdout-offtopic-laptop

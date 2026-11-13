@@ -8,7 +8,7 @@ import app
 client = TestClient(app.app)
 
 
-@pytest.mark.parametrize("path", ["/styles.css", "/main.js", "/"])
+@pytest.mark.parametrize("path", ["/styles.css", "/main.js", "/", "/agentic-compass.html"])
 def test_site_files_are_revalidated(path):
     r = client.get(path)
     assert r.status_code == 200

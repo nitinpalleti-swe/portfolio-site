@@ -63,9 +63,13 @@ Grounding (most important):
 - If neither the sources nor a tool can answer the question, say so plainly, for example: "That isn't covered in Nitin's background materials." Do not speculate about whether he might know it. Then suggest contacting Nitin directly through the Contact section of this page. If the sources partly answer it, give the part they support and say what is not covered.
 - Distinguish professional experience from personal projects and coursework exactly as the sources do.
 - Employment: describe his current role as working through MAS Global Consulting with JPMorganChase as the client (Offers team); don't comment on direct employment either way. When you describe his current role, cite an experience-jpmc-offers section, never experience-jpmc-2024 (an earlier, separate role).
-- For "now", "current" or "currently" questions (e.g. "What is Nitin working on now?"), lead with his current role (MAS Global Consulting, client JPMorganChase, Offers team) citing an experience-jpmc-offers section, then mention his independent projects.
-- For overview, background, applied-AI / AI-experience or projects questions, cover both his professional AI work (open that part with "In his current role, he …"; never write "his AI work is in…" or "comes from…" framing) and his independent projects, PaymentOps Workbench and Ask Nitin, clearly labeled as personal projects.
-- Never state counts or totals ("both roles", "three roles", "all his jobs", "N years of X") unless a source states that number. This includes counting items you list yourself: just name the specific roles or projects.
+- His current title is Senior Software Engineer at MAS Global Consulting (client: JPMorganChase, Offers team). Earlier roles keep their own titles.
+- For "now", "current" or "currently" questions (e.g. "What is Nitin working on now?"), lead with his current role (Senior Software Engineer at MAS Global Consulting, client JPMorganChase, Offers team) citing an experience-jpmc-offers section, then mention Agentic Compass (professional work, in production) and his independent projects.
+- For applied-AI / AI-experience / AI-agent questions, lead with his professional AI work: open with "In his current role, he designed and built Agentic Compass …" (in production after senior engineering lead reviews and UAT), cite a project-agentic-compass section, then his other professional AI work, then his personal projects, PaymentOps Workbench and Ask Nitin, clearly labeled as personal projects. Never write "his AI work is in…" or "comes from…" framing.
+- For overview, background or projects questions, start with his current role cited to a numbered experience-jpmc-offers section (e.g. [experience-jpmc-offers#1]), and cover his professional work including Agentic Compass (labeled as professional work, in production) and his personal projects, PaymentOps Workbench and Ask Nitin, clearly labeled as personal projects.
+- For non-AI skill questions (feature flags, Java, Kafka, AWS, testing, observability…), lead with his direct work in his roles (e.g. Split feature flags in his current role on the JPMorganChase Offers team) and cite those role sections. Agentic Compass may be a secondary mention only, and work done on tickets through Agentic Compass must be described as "a change delivered through Agentic Compass", not as work he did by hand.
+- Agentic Compass confidentiality: describe its validation results only in the generic terms the sources use. Never name, guess or confirm specific internal services, applications, tools, tickets, people or repositories, and never describe security findings beyond the sources' generic wording; if asked which services had vulnerabilities, secrets or other security findings, answer with this sentence and nothing that echoes the question's wording (never repeat words like "hardcoded", "secrets" or a vulnerability type): "The Agentic Compass case study describes its validation results only generically, without naming services or giving security-finding details." Never give usage, adoption, team, time-saved or cost numbers for it: say the sources don't state them.
+- Never state counts or totals ("both roles", "three roles", "all his jobs", "N years of X") unless a source states that number. This includes counting items you list yourself: when several roles match, name each role (e.g. "at Copart, at JPMorgan Chase & Co. and in his current role at MAS Global Consulting"), and never say "several", "multiple", "two" or similar unless a source states that count.
 - Don't add qualifiers the sources don't state: no "only", "all", "every", "just", "never", "limited to", "most recent", "main" or "latest". Say what the sources show, e.g. "his public GitHub repository is X", not "his most recent repository is X".
 - Never give out a phone number. For contact details, use only what the sources or the contact tool state.
 
@@ -95,12 +99,28 @@ PROJECTS_INTENT = re.compile(r"\b(overview|summar\w*|background|applied ai|ai|ar
 CURRENT_INTENT = re.compile(r"\b(now|current|currently|these days|at the moment|present|presently|today)\b", re.IGNORECASE)
 SITE_INTENT = re.compile(r"\b(this (site|website|page|portfolio)|portfolio (site|website)|ask nitin|how (was|is) (it|this|the site) built|"
                          r"built (this|the) (site|website|portfolio))\b", re.IGNORECASE)
-PROJECTS_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("profile#") and c.title.endswith("— Independent projects")]
+PROJECTS_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("profile#") and c.title.split(" — ")[-1] in ("Independent projects", "Professional AI work in production")]
+AGENT_INTENT = re.compile(r"\b(agentic|compass|agents?|guardrails?|copilot)\b", re.IGNORECASE)
+AGENT_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("project-agentic-compass#")
+                   and c.title.split(" — ")[-1] in ("Overview", "Status: in production", "Guardrails and governance")]
 SITE_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("project-ask-nitin#")
                   and c.title.split(" — ")[-1] in ("The portfolio site", "How it was built")]
 CURRENT_CHUNK_IDS = [c.id for c in CHUNKS if c.id.startswith("experience-jpmc-offers#")][:2] + PROJECTS_CHUNK_IDS
-assert PROJECTS_CHUNK_IDS and len(SITE_CHUNK_IDS) == 2, "knowledge sections for projects/site are missing"
+assert len(PROJECTS_CHUNK_IDS) == 2 and len(SITE_CHUNK_IDS) == 2 and len(AGENT_CHUNK_IDS) == 3, "knowledge sections for projects/site/agent are missing"
 REQUEST_DEADLINE_SECONDS = 20
+# Counts guard: a role count ("several roles", "both jobs") that no source states gets ONE regeneration.
+COUNT_CLAIM_RE = re.compile(r"\b(several|multiple|both|a few)\b(?:\W+\w+){0,3}?\W+(roles|jobs|positions)\b", re.IGNORECASE)
+COUNT_CORRECTION = ("Correction: rewrite your answer without counting his roles. Name each role instead "
+                    "(for example \"at Copart and at Sonata Software\"); don't say \"several\", \"multiple\", \"both\" or "
+                    "\"a few\" roles, jobs or positions. Keep the same facts and citation rules, and output only the answer.")
+
+
+def unsupported_count_claim(answer: str, source_texts: list[str]) -> str | None:
+    """The first role count in the answer that no source states, or None."""
+    for m in COUNT_CLAIM_RE.finditer(answer):
+        if not any(COUNT_CLAIM_RE.search(t) for t in source_texts):
+            return m.group(0)
+    return None
 STATS_TOKEN = os.getenv("STATS_TOKEN", "")
 EVAL_TOKEN = os.getenv("EVAL_TOKEN", "")
 MODEL_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9.-]{2,60}$")
@@ -198,7 +218,8 @@ async def chat(req: ChatRequest, request: Request):
         query += " " + next((t.content for t in reversed(history) if t.role == "user"), "")
     chunks = [c for c, _ in retrieve(query, k=6)]
     extra = (CURRENT_CHUNK_IDS if CURRENT_INTENT.search(req.message) else []) + \
-            (PROJECTS_CHUNK_IDS if PROJECTS_INTENT.search(req.message) else []) + \
+            (PROJECTS_CHUNK_IDS + AGENT_CHUNK_IDS[:2] if PROJECTS_INTENT.search(req.message) else []) + \
+            (AGENT_CHUNK_IDS if AGENT_INTENT.search(req.message) else []) + \
             (SITE_CHUNK_IDS if SITE_INTENT.search(req.message) else [])
     chunks += [CHUNKS_BY_ID[i] for i in extra if i not in {c.id for c in chunks}]
     allowed_ids = {c.id for c in chunks}
@@ -216,7 +237,7 @@ async def chat(req: ChatRequest, request: Request):
 
     async def events() -> AsyncIterator[str]:
         emitted, usages = [], []  # every event (for the answer cache) and every model call's usage (for cost)
-        status, refused, invalid = "aborted", False, 0
+        status, refused, invalid, count_retry = "aborted", False, 0, False
         deadline = time.monotonic() + REQUEST_DEADLINE_SECONDS
 
         def emit(event: dict) -> str:
@@ -273,6 +294,21 @@ async def chat(req: ChatRequest, request: Request):
                         yield emit(out.event)  # e.g. contact buttons
                     results.append((call["id"], out.content, out.is_error))
                 messages.append(tool_results_message(results))
+            # Counts guard: regenerate once if the answer counts roles that no source counts.
+            if (claim := unsupported_count_claim(reply, [s["text"] for s in sources])) and not count_retry:
+                count_retry = True
+                print(f"[chat] count guard: '{claim}', regenerating once")
+                messages.extend([{"role": "assistant", "content": reply}, {"role": "user", "content": COUNT_CORRECTION}])
+                reply = ""
+                yield emit({"type": "reset", "text": ""})
+                async for kind, value in stream_model(model, CHAT_SYSTEM_PROMPT, messages, tools=TOOLS,
+                                                      tool_choice={"type": "none"}):
+                    check_deadline()
+                    if kind == "text":
+                        reply += value
+                        yield emit({"type": "delta", "text": value})
+                    else:
+                        usages.append(value.usage)
             # 3) citation check: any id the model cited that wasn't in the sources or tool results is invalid
             cited = list(dict.fromkeys(CITE_RE.findall(reply)))
             invalid = sum(1 for i in cited if i not in allowed_ids)
@@ -299,7 +335,8 @@ async def chat(req: ChatRequest, request: Request):
             msg = "That took too long. Please try again." if status == "timeout" else "Something went wrong. Please try again."
             yield sse({"type": "error", "kind": status, "message": msg})  # kind: timeout | error (provider/infra)
         finally:  # runs on success, error, and client disconnect ("aborted")
-            log(status, usages, tools=list(dict.fromkeys(tools_used)), refused=refused, invalid_citations=invalid)
+            log(status, usages, tools=list(dict.fromkeys(tools_used)), refused=refused, invalid_citations=invalid,
+                **({"retry": "count_guard"} if count_retry else {}))
 
     return StreamingResponse(events(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
@@ -308,8 +345,9 @@ async def chat(req: ChatRequest, request: Request):
 # ── Job-fit report ────────────────────────────────────────────────────────────
 # The model reads the whole knowledge base plus the job description and returns a
 # Pydantic-validated report. Plain code then checks every claim (fail closed):
-# unknown source ids, Python/ML overclaims, unsupported years and hidden work-
-# authorization gaps are corrected, and overall_fit is capped by the rows.
+# unknown source ids, citations to the wrong employer/project, Python/ML overclaims,
+# unsupported years and hidden work-authorization gaps are corrected, and overall_fit
+# is capped by the rows.
 
 FIT_MODEL = os.getenv("FIT_MODEL", "claude-sonnet-5-5")
 WORK_AUTH_ID = next(c.id for c in CHUNKS if c.id.startswith("looking-for#") and c.title.endswith("— Work authorization"))
@@ -345,10 +383,10 @@ Method:
 
 Grounding rules:
 - Use ONLY the knowledge excerpts below. No outside knowledge about Nitin, his employers or technologies, and no inferences beyond what the excerpts state.
-- Never state counts or totals ("both roles", "N years of X") unless an excerpt states that number.
+- Never state counts or totals ("both roles", "N years of X") unless an excerpt states that number. When several roles match, name each one instead of counting them ("several", "multiple", "two").
 - Years of experience: "match" only if an excerpt states a number of years that meets the requirement.
 - Employment: describe it as working through MAS Global Consulting with JPMorganChase as the client; don't comment on direct employment either way.
-- Python is not one of his primary or production languages (basic scripting professionally, coursework, a personal project). A Python-heavy requirement is "partial" at most. Machine-learning research, model training or deep-learning requirements are "gap" unless an excerpt shows that work.
+- Python: Java is his primary language. At work he built Agentic Compass, about 5,000 lines of standard-library Python in production (project-agentic-compass); he also uses Python for scripting, coursework and the FastAPI backends of his personal projects. A general Python development requirement can be "match" when cited to a project-agentic-compass excerpt; otherwise it is "partial" at most. Machine-learning research, model training, deep learning or data-science library requirements (pandas, NumPy, PyTorch, TensorFlow, scikit-learn) are "gap" unless an excerpt shows that work.
 - Work authorization: he is on an H-1B and requires H-1B transfer sponsorship ({WORK_AUTH_ID}). If the job says it cannot sponsor visas, or requires citizenship, a green card or permanent residency, include that as a "gap" with source_id {WORK_AUTH_ID}.
 - overall_fit, from the rows only: "strong" when nearly all core requirements match; "good" when most match and the rest are partial; "partial" when the picture is mixed or an important requirement is a gap; "weak" when most core requirements are gaps.
 - summary: at most 60 words, third person, naming the main strengths and the main gaps.
@@ -361,7 +399,71 @@ Knowledge excerpts about Nitin (the only allowed sources):
 {format_sources(CHUNKS)}
 """
 
-PYTHON_ML_RE = re.compile(r"\bpython\b|machine learning|\bml\b|deep learning|pytorch|tensorflow|scikit|data scien|model training", re.I)
+ML_RE = re.compile(r"machine learning|\bml\b|deep learning|pytorch|tensorflow|scikit|keras|pandas|numpy|data scien|model training", re.I)
+PYTHON_RE = re.compile(r"\bpython\b", re.I)
+PYTHON_ML_RE = re.compile(f"{PYTHON_RE.pattern}|{ML_RE.pattern}", re.I)
+PYTHON_MATCH_FILE = "project-agentic-compass"  # general Python development is shown by his production Python at work
+
+# Evidence that names an employer or project must cite a source about it. Each entity lists the knowledge files
+# that may support it; a source whose own text names the entity also counts.
+ENTITY_FILES = {
+    r"\bcopart\b": ("experience-copart",),
+    r"\bsonata\b|\bsunrise\b": ("experience-sonata",),
+    r"\bbny\b": ("experience-bny",),
+    r"\bjp ?morgan|\bmas global\b": ("experience-jpmc-offers", "experience-jpmc-2024"),
+    r"\bpaymentops\b": ("project-paymentops",),
+    r"\bask nitin\b": ("project-ask-nitin",),
+    r"\bagentic compass\b": ("project-agentic-compass",),
+}
+ENTITY_WORDS = {"copart", "sonata", "sunrise", "bny", "jp", "jpmorgan", "jpmorganchase", "morgan", "chase", "ma", "mas",
+                "global", "consult", "paymentop", "paymentops", "ask", "agentic", "compass", "nitin", "he", "his", "built"}
+
+
+def _supports_entity(rx: str, files: tuple, chunk) -> bool:
+    return chunk.id.split("#")[0] in files or bool(re.search(rx, f"{chunk.title} {chunk.text}", re.I))
+
+
+def entity_citation_fix(evidence: str, source_id: str) -> tuple[str | None, bool]:
+    """Returns (source_id to use, ok). ok=False: no source supports every employer/project the evidence names."""
+    named = [(rx, files) for rx, files in ENTITY_FILES.items() if re.search(rx, evidence, re.I)]
+    chunk = CHUNKS_BY_ID.get(source_id)
+    if not named or (chunk and all(_supports_entity(rx, f, chunk) for rx, f in named)):
+        return source_id, True
+    key = {w for w in tokenize(evidence) if w not in GENERIC_WORDS and w not in ENTITY_WORDS}
+    best, best_score = None, 0.0
+    for c in CHUNKS:  # every chunk is in the fit model's excerpts
+        if c.id.split("#")[0] not in {f for _, files in named for f in files}:
+            continue
+        if not all(_supports_entity(rx, f, c) for rx, f in named):
+            continue
+        score = len(key & set(tokenize(f"{c.title} {c.text}"))) / len(key) if key else 0.0
+        if score > best_score:
+            best, best_score = c.id, score
+    if best and best_score >= 0.6:
+        return best, True
+    return source_id, False
+
+
+def _key_terms(evidence: str) -> set[str]:
+    return {w for w in tokenize(evidence) if w not in GENERIC_WORDS and w not in ENTITY_WORDS}
+
+
+def _overlap(key: set[str], chunk) -> float:
+    return len(key & set(tokenize(f"{chunk.title} {chunk.text}"))) / len(key) if key else 0.0
+
+
+def same_file_citation_fix(evidence: str, source_id: str) -> str:
+    """If the cited chunk lacks the evidence's key terms but a sibling chunk of the same file has >= 60%, use it."""
+    chunk = CHUNKS_BY_ID.get(source_id)
+    key = _key_terms(evidence)
+    if not chunk or len(key) < 2:
+        return source_id
+    here = _overlap(key, chunk)
+    if here >= 0.6:
+        return source_id
+    stem = source_id.split("#")[0]
+    best = max((c for c in CHUNKS if c.id.split("#")[0] == stem), key=lambda c: _overlap(key, c))
+    return best.id if _overlap(key, best) >= 0.6 and _overlap(key, best) > here else source_id
 GENERIC_WORDS = {"strong", "solid", "deep", "expert", "experience", "proficiency", "proficient", "knowledge", "skill",
                  "language", "year", "yr", "plus", "good", "hand", "required", "preferred", "professional"}
 
@@ -372,7 +474,7 @@ def non_python_alternative_supported(requirement: str, source_id: str) -> bool:
     if len(options) < 2 or source_id not in CHUNKS_BY_ID:
         return False
     chunk = CHUNKS_BY_ID[source_id]
-    cited = set(tokenize(f"{chunk.title} {chunk.text}"))  # the title carries the role, e.g. "Java Software Engineer"
+    cited = set(tokenize(f"{chunk.title} {chunk.text}"))  # the title carries the role, e.g. "Senior Software Engineer"
     for option in options:
         if PYTHON_ML_RE.search(option):
             continue  # the Python/ML option itself doesn't count
@@ -401,10 +503,25 @@ def check_fit_report(report: FitReport, job_description: str) -> tuple[FitReport
         if r.status != "gap" and not r.source_id:
             notes.append(f"'{r.requirement}': {r.status} without a source, now a gap")
             r.status = "gap"
-        if (r.status == "match" and PYTHON_ML_RE.search(r.requirement)
-                and not non_python_alternative_supported(r.requirement, r.source_id)):
-            notes.append(f"'{r.requirement}': Python/ML capped at partial")
-            r.status = "partial"
+        if r.status != "gap" and r.source_id:
+            fixed_id, ok = entity_citation_fix(r.evidence, r.source_id)
+            if fixed_id != r.source_id:
+                notes.append(f"'{r.requirement}': citation moved from {r.source_id} to {fixed_id} (the source the evidence names)")
+                r.source_id = fixed_id
+            elif not ok and r.status == "match":
+                notes.append(f"'{r.requirement}': evidence names an employer/project its source doesn't cover, now partial")
+                r.status = "partial"
+            sibling = same_file_citation_fix(r.evidence, r.source_id)
+            if sibling != r.source_id:
+                notes.append(f"'{r.requirement}': citation moved from {r.source_id} to {sibling} (the section with the evidence)")
+                r.source_id = sibling
+        if r.status == "match" and not non_python_alternative_supported(r.requirement, r.source_id):
+            if ML_RE.search(r.requirement):
+                notes.append(f"'{r.requirement}': ML / data-science capped at partial")
+                r.status = "partial"
+            elif PYTHON_RE.search(r.requirement) and not r.source_id.startswith(PYTHON_MATCH_FILE + "#"):
+                notes.append(f"'{r.requirement}': Python match needs a {PYTHON_MATCH_FILE} source, now partial")
+                r.status = "partial"
         need = YEARS_RE.search(r.requirement)
         if r.status == "match" and need:
             have = [int(n) for n in YEARS_RE.findall(CHUNKS_BY_ID[r.source_id].text)]

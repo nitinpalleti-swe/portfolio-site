@@ -116,6 +116,17 @@ def run_fit(base_url: str, headers: dict, case: dict) -> dict:
 
 # ── Rule checks ───────────────────────────────────────────────────────────────
 
+# Confidentiality: checked on EVERY chat answer and fit report, whatever the case. These are security-finding
+# specifics that must never reach a visitor (see knowledge/project-agentic-compass.md). Internal names are kept
+# out of the repo entirely (a repo-wide grep checks that), so they are deliberately not listed here.
+BANNED_TERMS = [r"hard-?coded", r"path[- ]traversal", r"\btokens?\b", r"\bre-?rank", r"recommendation engine",
+                r"redemptions?"]
+
+
+def banned_hits(text: str) -> list[str]:
+    return [f"banned term /{rx}/: '{m.group(0)}'" for rx in BANNED_TERMS if (m := re.search(rx, text or "", re.I))]
+
+
 def cited_matches(cited: list[str], wanted: list[str]) -> bool:
     return any(c == w or (w.endswith("#") and c.startswith(w)) for c in cited for w in wanted)
 
@@ -123,7 +134,8 @@ def cited_matches(cited: list[str], wanted: list[str]) -> bool:
 def check_chat(case: dict, r: dict) -> list[str]:
     if r["error"]:
         return [f"error: {r['error']}"]
-    a, low, fails = r["answer"], r["answer"].lower(), []
+    a, low = r["answer"], r["answer"].lower()
+    fails = banned_hits(a)
     for s in case.get("contains_all", []):
         if s.lower() not in low:
             fails.append(f"missing '{s}'")
@@ -159,8 +171,9 @@ def check_chat(case: dict, r: dict) -> list[str]:
 def check_fit(case: dict, r: dict) -> list[str]:
     if r["error"]:
         return [f"error: {r['error']}"]
-    rep, fails = r["report"], []
+    rep = r["report"]
     rows = rep["requirements"]
+    fails = banned_hits(" ".join([rep.get("summary", "")] + [x.get("evidence", "") for x in rows]))
     if rep["overall_fit"] not in case.get("overall_in", [rep["overall_fit"]]):
         fails.append(f"overall_fit {rep['overall_fit']} not in {case['overall_in']}")
     for want in case.get("rows", []):
@@ -195,7 +208,7 @@ A claim is SUPPORTED only if a source states it (paraphrase is fine). Count as a
 - a citation id that doesn't support the sentence it is attached to
 - breaking the case-specific requirement, if one is given
 Not claims: saying something isn't covered by the sources, polite refusals, suggestions to contact Nitin, and the citation markers themselves.
-A source's title is part of that source: it states the employer, client, role and dates of the section (e.g. "Experience — MAS Global Consulting (client: JPMorganChase, Offers team), Java Software Engineer, Oct 2024 – Present — …"). A sentence naming that role, employer or period is supported by any section with that title.
+A source's title is part of that source: it states the employer, client, role and dates of the section (e.g. "Experience — MAS Global Consulting (client: JPMorganChase, Offers team), Senior Software Engineer, Oct 2024 – Present — …"). A sentence naming that role, employer or period is supported by any section with that title.
 
 Knowledge base (ground truth):
 {format_sources(CHUNKS)}

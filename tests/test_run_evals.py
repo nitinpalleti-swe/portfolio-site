@@ -79,3 +79,13 @@ def test_pass_rate_ignores_errors(monkeypatch):
 ])
 def test_error_kind(status, body, expected):
     assert run_evals.error_kind(status, body) == expected
+
+
+def test_banned_terms_fail_any_chat_answer():
+    case = {"id": "anything", "question": "q"}
+    assert run_evals.check_chat(case, chat_result()) == []
+    leaked = chat_result(answer="It found hardcoded tokens in a recommendation engine [skills#3].")
+    fails = run_evals.check_chat(case, leaked)
+    assert len(fails) == 3 and all(f.startswith("banned term") for f in fails)
+    assert run_evals.banned_hits("He reranks offers") and run_evals.banned_hits("offer redemptions")
+    assert not run_evals.banned_hits("secret redaction and least privilege")  # generic guardrail words are fine

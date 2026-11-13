@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agentic Compass — case study · Nitin Palleti</title>
+  <meta name="description" content="Agentic Compass: a human-supervised AI agent for GitHub Copilot that Nitin Palleti built at work. In production after senior engineering lead reviews and UAT." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23161513'/><text x='16' y='22' font-family='monospace' font-size='15' text-anchor='middle' fill='%2357c785'>np</text></svg>" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="dot"></span>nitin.palleti</a>
+    <nav class="nav" id="siteNav" aria-label="Sections">
+      <a href="#problem">Problem</a>
+      <a href="#approach">Approach</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#guardrails">Guardrails</a>
+      <a href="#results">Results</a>
+      <a href="index.html">Home</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="siteNav" aria-label="Open menu"><span aria-hidden="true">☰</span></button>
+    <button class="theme" id="themeBtn" aria-label="Toggle colour theme">◐</button>
+  </header>
+
+  <main id="top">
+    <!-- ───────── HERO ───────── -->
+    <section class="case-hero">
+      <a class="back mono" href="index.html#work">← Featured work</a>
+      <p class="eyebrow mono"><span class="pulse"></span> Work project · In production</p>
+      <h1>Agentic Compass</h1>
+      <p class="motto">Understand. Route. Build. Prove.</p>
+      <p class="lede">
+        A human-supervised, understand-first AI agent for GitHub Copilot: give it a Jira ticket and it returns
+        business context, evidence-backed analysis, a routed implementation plan, real test verification and an
+        auditable history, with every remote write approved by a human.
+        I built it in about a week in my current role as a Senior Software Engineer at MAS Global Consulting
+        (client: JPMorganChase, Offers team), and after senior engineering lead reviews and UAT it is in production.
+      </p>
+      <div class="metrics">
+        <div class="metric"><span class="big">8</span><span class="mono small">real tickets it was validated on</span></div>
+        <div class="metric"><span class="big">5</span><span class="mono small">services across Java and Python</span></div>
+        <div class="metric"><span class="big">73</span><span class="mono small">unit tests, all passing</span></div>
+        <div class="metric"><span class="big">19</span><span class="mono small">routes; all 61 referenced skills resolved</span></div>
+      </div>
+      <p class="note mono">Professional work. Internal names, tickets and service details are left out on purpose; results are described generically.</p>
+    </section>
+
+    <!-- ───────── PROBLEM ───────── -->
+    <section id="problem" class="block">
+      <div class="block-head"><span class="num mono">01</span><h2>Problem</h2></div>
+      <div class="prose">
+        <p>Engineers kept paying the same discovery cost before writing any code: reading the ticket, finding
+          predecessor work and pull requests, choosing the right base branch, setting up runtimes, and working
+          out which tests actually prove the acceptance criteria.</p>
+        <p>Generic "Jira-to-code" agents skip that work. They jump straight to code, miss hidden dependencies and
+          say the code "should pass" without running anything. Meanwhile the organization already had many
+          specialist AI skills (security remediation, testing, API governance, infrastructure) but no front door
+          to pick the right one and no shared format for evidence.</p>
+      </div>
+    </section>
+
+    <!-- ───────── APPROACH ───────── -->
+    <section id="approach" class="block">
+      <div class="block-head"><span class="num mono">02</span><h2>Approach: the router pivot</h2></div>
+      <div class="prose">
+        <p>I started out building another Jira-to-code agent. Then I realized capable specialist skills already
+          existed. What was missing was <strong>understanding, routing and evidence</strong>.</p>
+        <p>So I turned Agentic Compass into an orchestrator: it understands the ticket first, then deterministically
+          routes the domain work to the existing specialist skills instead of duplicating them. The strictest
+          child-skill guardrail always wins, and the router never inherits the union of its children's permissions.</p>
+        <p>Review mode asks zero routine questions. The only mandatory human decision before coding is the base
+          branch, and every claim is labeled <span class="mono">VERIFIED</span>, <span class="mono">INFERRED</span>
+          or <span class="mono">UNKNOWN</span> with file:line or source citations.</p>
+      </div>
+      <blockquote class="pull">The missing pieces were understanding, routing and evidence.</blockquote>
+    </section>
+
+    <!-- ───────── ARCHITECTURE ───────── -->
+    <section id="architecture" class="block">
+      <div class="block-head"><span class="num mono">03</span><h2>Architecture</h2></div>
+      <ol class="flow" aria-label="Agentic Compass workflow">
+        <li><span class="stepbox"><span class="k">input</span>Jira key</span></li>
+        <li><span class="stepbox"><span class="k">ask</span>Business brief + acceptance criteria</span></li>
+        <li><span class="stepbox"><span class="k">analysis</span>Repo fit, history, overlapping PRs, blockers</span></li>
+        <li><span class="stepbox"><span class="k">route</span>Deterministic route to specialist skills</span></li>
+        <li class="human"><span class="stepbox"><span class="k">human</span>"go" + verified base branch</span></li>
+        <li><span class="stepbox"><span class="k">implement</span>Local changes only</span></li>
+        <li><span class="stepbox"><span class="k">tests</span>Each layer: what it proves and doesn't</span></li>
+        <li><span class="stepbox"><span class="k">history</span>Append-only event log</span></li>
+        <li class="human"><span class="stepbox"><span class="k">human</span>Confirmed push / PR / evidence</span></li>
+      </ol>
+      <p class="flow-legend"><span class="swatch" aria-hidden="true"></span>Human decision: nothing happens past these steps without the engineer.</p>
+      <div class="two-col">
+        <div class="prose">
+          <p><strong>Small and dependency-free.</strong> Python 3.11+ standard library only, plus plain JavaScript,
+            HTML and CSS with no framework or build step: about 5,000 lines across 7 single-responsibility modules
+            (routing, skill resolution, a Jira fallback, repository preflight, workspaces, gated state, dashboard).</p>
+          <p><strong>A resumable workspace per ticket</strong>, Git-excluded so it never pollutes a pull request: a
+            summary, command proof records, versioned state, the event log, raw artifacts and Bruno API checks.</p>
+        </div>
+        <div class="prose">
+          <p><strong>19 routes</strong> cover security findings, dependency and container vulnerabilities, component,
+            contract and performance testing, feature work, API governance, infrastructure-as-code and an explicit
+            "unknown" route. All 61 referenced specialist skills resolved.</p>
+          <p><strong>A read-only dashboard</strong> with five tabs (Ask, Analysis, Implementation, Tests, History)
+            plus Commands, bound to loopback, with secret redaction and scoped per repository.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────── GUARDRAILS ───────── -->
+    <section id="guardrails" class="block">
+      <div class="block-head"><span class="num mono">04</span><h2>Guardrails &amp; governance</h2></div>
+      <ul class="checks prose">
+        <li><strong>A human approves every remote write.</strong> Push, pull request and evidence are each previewed and confirmed; no command implies the next.</li>
+        <li><strong>It never</strong> deploys, merges, changes traffic, flips feature flags, transitions Jira tickets or changes cloud resources.</li>
+        <li><strong>Least privilege.</strong> The strictest child-skill guardrail wins; the router never inherits the union of child permissions.</li>
+        <li><strong>Evidence labels.</strong> VERIFIED / INFERRED / UNKNOWN, with file:line or source citations.</li>
+        <li><strong>Audit trail.</strong> An append-only event log, plus proof records of each exact command, working directory, exit status and what it proves.</li>
+        <li><strong>Secure by default.</strong> Loopback-only, read-only dashboard with redaction; zero dependencies; Git-excluded workspaces.</li>
+        <li><strong>The scanner decides.</strong> For security findings, the original scanner is the oracle for closure.</li>
+        <li><strong>Formal process.</strong> Senior engineering lead reviews → UAT → production, for the tool and for the code changes delivered through it.</li>
+      </ul>
+    </section>
+
+    <!-- ───────── RESULTS ───────── -->
+    <section id="results" class="block">
+      <div class="block-head"><span class="num mono">05</span><h2>Results</h2></div>
+      <p class="prose">Validated on 8 real tickets across 5 services before production rollout. Across them, the most
+        useful output was often a reason to stop: it surfaced wrong ticket assumptions, overlapping pull requests,
+        diverged branches, cosmetic security fixes and missing dependencies <em>before</em> coding, instead of guessing.</p>
+      <ul class="results">
+        <li><span class="mono">Java/Maven service · A/B test feature</span>A change delivered through Agentic Compass implemented a feature-flagged A/B test feature: 357/357 unit and 24/24 component tests passing, 100% coverage of new lines and branches (JaCoCo). Flagged an unstarted dependency ticket and an unspecified flag name.</li>
+        <li><span class="mono">Same service · compliance finding</span>Showed the prescribed security fix would only change scanner detection, not remove the underlying exposure; escalated to the owners instead of shipping a cosmetic fix.</li>
+        <li><span class="mono">Java API service · cleanup</span>Found an open overlapping PR and a diverged release branch, and blocked delivery until the dependency merged. A change delivered through Agentic Compass then touched 14 files, with 87.2% module line coverage, 100% changed-line coverage.</li>
+        <li><span class="mono">Same service · CI test reporting</span>Stayed analysis-only because required details were missing and the linked guide was inaccessible, rather than guessing.</li>
+        <li><span class="mono">Python AWS Lambda service · SAST finding</span>Identified candidate sinks with file:line evidence; a change delivered through Agentic Compass put the fix on a feature branch, with the scanner re-scan as the closure oracle.</li>
+        <li><span class="mono">Same service · SDK upgrade</span>Found the ticket's assumption about SDK usage was wrong, found an unmerged prior upgrade, and flagged a 250 MB package-size risk.</li>
+        <li><span class="mono">Java service · component tests</span>Found test-data and assertion gaps in a story already marked "Ready for Review".</li>
+        <li><span class="mono">Container-image finding</span>Showed closure depended on the deployed image and pipeline, not the repository's code.</li>
+      </ul>
+    </section>
+
+    <!-- ───────── TECH STACK ───────── -->
+    <section id="stack" class="block">
+      <div class="block-head"><span class="num mono">06</span><h2>Tech stack</h2></div>
+      <div class="toolbox">
+        <dl>
+          <div><dt>Agent</dt><dd>GitHub Copilot agent skills, MCP (Jira) with a bounded-retry CLI fallback, specialist skill routing</dd></div>
+          <div><dt>Code</dt><dd>Python 3.11+ standard library, plain JavaScript / HTML / CSS, no dependencies</dd></div>
+          <div><dt>Verification</dt><dd>Maven, JaCoCo, Bruno (API checks), component, contract, coverage and performance test layers</dd></div>
+          <div><dt>Quality</dt><dd>73 unit tests; two-layer evals (skill-selection prompts, routing fixtures)</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ───────── LEARNED ───────── -->
+    <section id="learned" class="block">
+      <div class="block-head"><span class="num mono">07</span><h2>What I learned</h2></div>
+      <ol class="decisions prose">
+        <li><strong>Check what already exists before building.</strong> The biggest design win was not writing another code generator: the specialist skills existed, and the gap was understanding, routing and evidence.</li>
+        <li><strong>Stopping is a feature.</strong> On real tickets, the most valuable result was often a reason not to code yet: a wrong assumption, an overlapping PR, a fix that would only have been cosmetic.</li>
+        <li><strong>Say what a test doesn't prove.</strong> Recording what each test layer proves, and what it doesn't, keeps unit, local, deployed and production evidence from being confused.</li>
+        <li><strong>Small is a safety property.</strong> Standard-library code with no dependencies means no dependency-scanning overhead and a small attack surface; a loopback-only, read-only dashboard and human-approved writes keep the risky actions with people.</li>
+      </ol>
+    </section>
+
+    <!-- ───────── NEXT ───────── -->
+    <section id="next" class="block">
+      <div class="block-head"><span class="num mono">08</span><h2>What's next</h2></div>
+      <ul class="checks prose">
+        <li>Wider adoption.</li>
+        <li>Contributing it upstream as an optional plugin.</li>
+      </ul>
+      <p class="prose"><a class="btn" href="index.html#contact">Talk to me about it</a></p>
+    </section>
+  </main>
+
+  <footer class="foot mono small">
+    <span>© 2026 Nitin Palleti</span>
+    <span class="muted"><a href="index.html">Home</a> · No tracking</span>
+  </footer>
+
+  <div class="pop" id="pop" role="tooltip" hidden></div>
+  <script src="main.js"></script>
+</body>
+</html>

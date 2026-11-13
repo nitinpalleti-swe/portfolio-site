@@ -1,8 +1,8 @@
-# Experience — MAS Global Consulting (client: JPMorganChase, Offers team), Java Software Engineer, Oct 2024 – Present
-Sources: résumé p.1 (JPMorganChase, Oct 2024 – Present); portfolio/index.html (Experience); employer details confirmed by Nitin, 2026-11-07.
+# Experience — MAS Global Consulting (client: JPMorganChase, Offers team), Senior Software Engineer, Oct 2024 – Present
+Sources: résumé p.1 (JPMorganChase, Oct 2024 – Present); portfolio/index.html (Experience); employer details confirmed by Nitin, 2026-11-07; current title and Agentic Compass confirmed by Nitin, 2026-11-13.
 
 ## Role and dates
-Java Software Engineer at MAS Global Consulting, working for client JPMorganChase on the Offers team, October 2024 to present, Plano, TX (hybrid). He is a full-time employee of MAS Global Consulting.
+Senior Software Engineer at MAS Global Consulting (client: JPMorganChase, Offers team), building Java/Spring Boot microservices and REST APIs, October 2024 to present, Plano, TX (hybrid). He is a full-time employee of MAS Global Consulting.
 
 ## Offer decisioning microservices
 Designed and evolved Java/Spring Boot microservices and REST APIs for the Offers team, supporting personalized offer decisioning and integrations across transactional, merchant and behavioral data. Delivered Spring Boot and dependency upgrades and contributed to technical design and code reviews, implementing application and unit-test changes while maintaining compatibility, code quality and release readiness.
@@ -18,3 +18,6 @@ Used and enhanced internal AI skills, MCP tools and Copilot to streamline codeba
 
 ## Performance testing and observability
 Designed and executed BlazeMeter performance tests to validate throughput, expose bottlenecks and assess release readiness under load. Onboarded services to Datadog APM and created monitors and alerts for service health; used Datadog, Splunk and Dynatrace for logs, traces, performance analysis and production triage.
+
+## Agentic Compass
+In this role he designed and built Agentic Compass, a human-supervised AI agent for GitHub Copilot that is now in production after senior engineering lead reviews and UAT; see project-agentic-compass.

@@ -251,3 +251,34 @@ main { max-width: 1040px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 48px); }
   .nav.open a { padding: .75rem 0; font-size: 1rem; border-top: 1px dashed var(--line); }
   .nav.open a:first-child { border-top: 0; }
 }
+
+/* ── Agentic Compass card + case-study page ── */
+.project.work { margin-bottom: 1.5rem; }
+.project .role-tag { margin-right: .4rem; }
+.case-hero { padding: clamp(48px, 9vw, 110px) 0 48px; }
+.case-hero h1 { font-size: clamp(2.6rem, 8vw, 5rem); line-height: .98; }
+.case-hero .motto { font-family: var(--mono); font-size: .9rem; color: var(--accent); margin: 1rem 0 0; }
+.case-hero .lede { max-width: 48ch; }
+.back { display: block; width: fit-content; margin-bottom: 1.25rem; font-size: .85rem; color: var(--ink-2); text-decoration: none; }
+.back:hover { color: var(--ink); }
+.prose { max-width: 68ch; color: var(--ink-2); }
+.prose p { margin: 0 0 1rem; }
+.prose strong { color: var(--ink); }
+.flow { list-style: none; padding: 0; margin: 1.5rem 0 1rem; display: flex; flex-wrap: wrap; align-items: stretch; gap: .5rem; }
+.flow li { display: flex; align-items: center; gap: .5rem; }
+.flow li:not(:last-child)::after { content: "→"; font-family: var(--mono); color: var(--muted); }
+.flow .stepbox { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: .55rem .8rem; font-size: .88rem; line-height: 1.3; }
+.flow .stepbox .k { display: block; font-family: var(--mono); font-size: .64rem; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.flow .human .stepbox { border: 1.5px dashed var(--accent); background: var(--accent-soft); }
+.flow-legend { font-size: .78rem; color: var(--muted); margin: 0 0 1.5rem; }
+.flow-legend .swatch { display: inline-block; width: .8rem; height: .8rem; border: 1.5px dashed var(--accent); background: var(--accent-soft); border-radius: 3px; vertical-align: -1px; margin-right: .35rem; }
+.results { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.results li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; color: var(--ink-2); font-size: .93rem; }
+.results .mono { display: block; font-size: .7rem; color: var(--muted); margin-bottom: .3rem; }
+.note { font-size: .8rem; color: var(--muted); margin-top: 1rem; }
+@media (max-width: 860px) { .results { grid-template-columns: 1fr; } }
+@media (max-width: 640px) {
+  .flow { flex-direction: column; align-items: stretch; }
+  .flow li { flex-direction: column; align-items: stretch; }
+  .flow li:not(:last-child)::after { content: "↓"; text-align: center; }
+}
