@@ -1,0 +1,18 @@
+# Caddy gets and renews the Let's Encrypt certificates automatically (DNS must point here first).
+# reverse_proxy ignores client-supplied X-Forwarded-* headers by default and sets X-Forwarded-For
+# itself, so the app can trust exactly one hop (TRUSTED_PROXY_HOPS=1).
+
+www.nitinpalleti.com {
+	redir https://nitinpalleti.com{uri} permanent
+}
+
+nitinpalleti.com {
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	reverse_proxy app:8000
+}

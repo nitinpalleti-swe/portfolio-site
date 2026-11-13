@@ -15,3 +15,8 @@ PROMPTS-ask-nitin.md
 run_evals.py
 evals.yaml
 evals-holdout.yaml
+docker-compose*.yml
+Caddyfile
+deploy/
+README.md
+run.sh

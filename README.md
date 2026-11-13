@@ -63,24 +63,101 @@ Provider hiccups are retried once, then reported as ERROR (not graded). Exit cod
 2 setup problem or inconclusive. Eval requests use `EVAL_TOKEN` (development + localhost only), skip rate limits and
 cache, and are charged to `EVAL_DAILY_CAP_USD`. One full run costs about $0.14–0.21.
 
-## Deploy (Fly.io: one always-on machine + 1 GB volume, about $3.84/month)
+## Deploy on AWS Lightsail (one $7/month VM: Docker Compose + Caddy)
 
-Files: `Dockerfile`, `.dockerignore`, `fly.toml`. Steps (needs a Fly account and `flyctl`):
+Files: `Dockerfile`, `docker-compose.yml` (app + Caddy), `Caddyfile` (automatic HTTPS for nitinpalleti.com,
+www → apex), `deploy/setup.sh` (one-time server setup), `deploy/.env.production.example`.
+The app port is not published on the host; only Caddy (80/443) is. Logs live on the `app_data` volume, so the
+daily spend cap survives restarts. All `aws` commands below use `--profile portfolio --region us-east-2`
+(shortened to `$AWS`).
 
 ```bash
-fly launch --no-deploy --copy-config --name <your-app-name>     # keeps fly.toml; region dfw
-fly volumes create ask_nitin_data --size 1 --region dfw
-fly secrets set ANTHROPIC_API_KEY=... STATS_TOKEN=$(python3 -c "import secrets;print(secrets.token_urlsafe(32))") IP_HASH_SALT=$(python3 -c "import secrets;print(secrets.token_hex(32))")
-fly deploy --ha=false && fly scale count 1
+AWS="--profile portfolio --region us-east-2"
 ```
+
+### 1. Create the server
+
+```bash
+aws lightsail create-instances $AWS --instance-names ask-nitin --availability-zone us-east-2a \
+  --blueprint-id ubuntu_24_04 --bundle-id micro_3_0
+aws lightsail allocate-static-ip $AWS --static-ip-name ask-nitin-ip
+aws lightsail attach-static-ip $AWS --static-ip-name ask-nitin-ip --instance-name ask-nitin
+aws lightsail get-static-ip $AWS --static-ip-name ask-nitin-ip --query staticIp.ipAddress --output text
+# Firewall: SSH only from your current IP; 80/443 from anywhere (replaces the default rules).
+MYIP=$(curl -s https://checkip.amazonaws.com)
+aws lightsail put-instance-public-ports $AWS --instance-name ask-nitin --port-infos \
+  "fromPort=22,toPort=22,protocol=tcp,cidrs=$MYIP/32" \
+  "fromPort=80,toPort=80,protocol=tcp,cidrs=0.0.0.0/0,ipv6Cidrs=::/0" \
+  "fromPort=443,toPort=443,protocol=tcp,cidrs=0.0.0.0/0,ipv6Cidrs=::/0" \
+  "fromPort=443,toPort=443,protocol=udp,cidrs=0.0.0.0/0,ipv6Cidrs=::/0"
+# SSH key (never commit it).
+aws lightsail download-default-key-pair $AWS --query privateKeyBase64 --output text > ~/.ssh/lightsail-ask-nitin.pem
+chmod 600 ~/.ssh/lightsail-ask-nitin.pem
+```
+
+### 2. DNS (Cloudflare)
+
+Add `A @ → <static IP>` and `A www → <static IP>`, both **DNS only** (grey cloud), so Caddy can get the
+certificates. Wait until `dig +short nitinpalleti.com` and `dig +short www.nitinpalleti.com` return the IP.
+
+### 3. Deploy
+
+```bash
+ssh -i ~/.ssh/lightsail-ask-nitin.pem ubuntu@<static IP>
+git clone https://github.com/nitinpalleti-swe/portfolio-site.git && cd portfolio-site
+sudo bash deploy/setup.sh && exit          # log back in so the docker group applies
+```
+
+```bash
+ssh -i ~/.ssh/lightsail-ask-nitin.pem ubuntu@<static IP>
+cd portfolio-site && cp deploy/.env.production.example .env && chmod 600 .env
+nano .env                                   # ANTHROPIC_API_KEY, fresh STATS_TOKEN and IP_HASH_SALT
+docker compose up -d --build
+```
+
+### 4. Verify (from your laptop)
+
+```bash
+curl -sI https://nitinpalleti.com | head -1                 # 200, valid certificate
+curl -sI https://www.nitinpalleti.com | grep -i location    # 301 → https://nitinpalleti.com/
+curl -sI http://nitinpalleti.com | grep -i location         # → https
+curl -s https://nitinpalleti.com/api/health                 # {"status":"ok",...}
+curl -s -o /dev/null -w "%{http_code}\n" https://nitinpalleti.com/api/search?q=x   # 404 (production)
+curl -s -o /dev/null -w "%{http_code}\n" https://nitinpalleti.com/api/stats        # 404 without the token
+# Spoofed X-Forwarded-For must not dodge the rate limit: the 16th request returns 429.
+for i in $(seq 1 16); do curl -s -o /dev/null -w "%{http_code} " -H "X-Forwarded-For: 10.0.0.$i" \
+  https://nitinpalleti.com/api/chat -H 'content-type: application/json' -d '{"message":"Where is Nitin based?"}'; done
+```
+
+The rate-limit test uses up your own IP's hourly chat allowance (15/hour) for the next hour.
+
+### Update, logs, snapshot, rollback
+
+```bash
+cd ~/portfolio-site && git pull && docker compose up -d --build   # update
+docker compose logs -f app                                        # app logs (caddy: logs -f caddy)
+docker compose exec app tail -n 5 /data/logs/requests.jsonl       # request log on the volume
+aws lightsail create-instance-snapshot $AWS --instance-name ask-nitin --instance-snapshot-name ask-nitin-$(date +%F)
+git checkout <good-commit> && docker compose up -d --build        # roll back the code
+# Roll back the whole server: create-instances-from-snapshot, then move the static IP to the new instance.
+```
+
+### Teardown (stops all charges; a stopped instance still bills)
+
+```bash
+aws lightsail delete-instance $AWS --instance-name ask-nitin
+aws lightsail release-static-ip $AWS --static-ip-name ask-nitin-ip    # unattached static IPs are billed
+aws lightsail get-instance-snapshots $AWS --query 'instanceSnapshots[].name' --output text
+aws lightsail delete-instance-snapshot $AWS --instance-snapshot-name <name>   # for each snapshot
+```
+
+Then delete the two A records in Cloudflare.
 
 ### Production checklist
 
-- [ ] `APP_ENV=production` (in fly.toml): disables `/api/search` and the eval bypass
-- [ ] Fresh `STATS_TOKEN` and `IP_HASH_SALT` as host secrets; **no `EVAL_TOKEN`** in production
-- [ ] `ANTHROPIC_API_KEY` only as a host secret; optional `GITHUB_TOKEN` with zero scopes
-- [ ] Client IP: `CLIENT_IP_HEADER=Fly-Client-IP`, `TRUSTED_PROXY_HOPS=0` (Fly's rightmost X-Forwarded-For entry is its own address)
-- [ ] Exactly 1 machine, 1 worker, `--no-proxy-headers`; health check `/api/health`; `LOG_DIR=/data/logs` on the volume
-- [ ] Spoofing test after deploy: 16 requests with fake headers must end in HTTP 429:
-      `for i in $(seq 1 16); do curl -s -o /dev/null -w "%{http_code} " -H "X-Forwarded-For: 10.0.0.$i" -H "Fly-Client-IP: 10.0.0.$i" https://<app>.fly.dev/api/chat -H 'content-type: application/json' -d '{"message":"Where is Nitin based?"}'; done`
+- [ ] `.env` on the server only (chmod 600): `APP_ENV=production`, fresh `STATS_TOKEN` and `IP_HASH_SALT`, **no `EVAL_TOKEN`**
+- [ ] Client IP: `TRUSTED_PROXY_HOPS=1`, `CLIENT_IP_HEADER` empty (Caddy ignores client-supplied X-Forwarded-For and sets its own)
+- [ ] App port not published; only Caddy on 80/443; SSH open only to your IP
+- [ ] One app container, one worker, `--no-proxy-headers`; logs on the `app_data` volume
+- [ ] Spoofed-X-Forwarded-For test ends in HTTP 429
 - [ ] Run `.venv/bin/python run_evals.py` locally before every deploy

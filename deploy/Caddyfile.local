@@ -1,0 +1,17 @@
+# Local test only: same config as ../Caddyfile, served on localhost with Caddy's internal CA.
+www.localhost {
+	tls internal
+	redir https://localhost:8443{uri} permanent
+}
+
+localhost {
+	tls internal
+	encode zstd gzip
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+	reverse_proxy app:8000
+}

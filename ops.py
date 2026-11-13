@@ -44,7 +44,7 @@ CACHE_TTL_SECONDS = 3600
 # X-Forwarded-For entirely (anyone can send that header). On a host with one proxy, set 1.
 # Run uvicorn with --no-proxy-headers so it doesn't rewrite the client address before we see it.
 TRUSTED_PROXY_HOPS = int(os.getenv("TRUSTED_PROXY_HOPS", "0"))
-# Alternatively, a header that the host's proxy sets to the client address (Fly.io: Fly-Client-IP).
+# Alternatively, a header that the host's proxy sets to the client address (not used behind Caddy).
 # Only set this when the app is reachable exclusively through that proxy, so clients can't set it themselves.
 CLIENT_IP_HEADER = os.getenv("CLIENT_IP_HEADER", "").strip().lower()
 

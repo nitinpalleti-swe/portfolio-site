@@ -1,0 +1,15 @@
+# Local test only (Colima/Docker Desktop):
+#   docker compose -f docker-compose.yml -f deploy/docker-compose.local.yml up -d --build
+# Uses .env.localtest (git-ignored: APP_ENV=production, no EVAL_TOKEN) and serves https://localhost:8443.
+services:
+  app:
+    env_file: !override
+      - .env.localtest
+  caddy:
+    ports: !override
+      - "8080:80"
+      - "8443:443"
+    volumes: !override
+      - ./deploy/Caddyfile.local:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config

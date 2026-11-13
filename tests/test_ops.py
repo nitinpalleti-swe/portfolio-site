@@ -119,8 +119,15 @@ def test_eval_spend_has_its_own_budget(tmp_path, monkeypatch):
     assert ops.over_eval_cap() and not ops.over_daily_cap()
 
 
-def test_client_ip_header_mode_for_fly():
-    headers = {"fly-client-ip": "198.51.100.9", "x-forwarded-for": "6.6.6.6, 198.51.100.9, 66.241.124.1"}
-    assert ops.client_ip(headers, "172.16.0.2", hops=0, ip_header="fly-client-ip") == "198.51.100.9"
-    assert ops.client_ip({}, "172.16.0.2", hops=0, ip_header="fly-client-ip") == "172.16.0.2"  # header missing
+def test_client_ip_header_mode():
+    headers = {"x-client-ip": "198.51.100.9", "x-forwarded-for": "6.6.6.6, 198.51.100.9, 66.241.124.1"}
+    assert ops.client_ip(headers, "172.16.0.2", hops=0, ip_header="x-client-ip") == "198.51.100.9"
+    assert ops.client_ip({}, "172.16.0.2", hops=0, ip_header="x-client-ip") == "172.16.0.2"  # header missing
     assert ops.client_ip(headers, "172.16.0.2", hops=0, ip_header="") == "172.16.0.2"          # not configured: ignored
+
+
+def test_client_ip_behind_caddy():
+    # Caddy ignores a client-supplied X-Forwarded-For and sends only the peer address; with one trusted
+    # hop the app uses the last entry, so even a header that slipped through can't pick the bucket.
+    assert ops.client_ip({"x-forwarded-for": "203.0.113.5"}, "172.18.0.3", hops=1, ip_header="") == "203.0.113.5"
+    assert ops.client_ip({"x-forwarded-for": "10.0.0.1, 203.0.113.5"}, "172.18.0.3", hops=1, ip_header="") == "203.0.113.5"
